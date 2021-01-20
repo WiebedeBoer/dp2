@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace tekenprogramma
 {
-    public class Receiver
+    class Receiver
     {
-
         private List<ICommand> action = new List<ICommand>();
 
         public void takeOrder(ICommand order)
@@ -26,25 +25,4 @@ namespace tekenprogramma
             action.Clear();
         }
     }
-
-    //private string action;
-
-    //public Receiver(string action)
-    //{
-    //    this.action = action;
-    //}
-
-    //public void Actions(string action)
-    //{
-    //this.action = action;
-    //if (action == "create rectangle")
-    //{
-    //MakeRectangle.Execute();
-    //}
-    //else if(action =="create elipse"){
-    //MakeEllipse.Execute();
-    //}            
-    //}
-
-
 }

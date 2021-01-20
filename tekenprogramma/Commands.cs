@@ -102,9 +102,10 @@ namespace tekenprogramma
                 //double left = Canvas.GetLeft(c as FrameworkElement);
                 //double width = (c as FrameworkElement).Width;
                 //double height = (c as FrameworkElement).Height;
-                backuprectangle.Height = Convert.ToDouble(Height.Text); //set width
-                backuprectangle.Width = Convert.ToDouble(Width.Text); //set height
-                
+                Rectangle selRect = new Rectangle();
+                backuprectangle.Height = Convert.ToDouble(selRect.Height); //set width
+                backuprectangle.Width = Convert.ToDouble(selRect.Width); //set height
+
             }
             //else if ellipse
             else if (type == "Ellipse")
@@ -113,9 +114,10 @@ namespace tekenprogramma
                 //double left = Canvas.GetLeft(c as FrameworkElement);
                 //double width = (c as FrameworkElement).Width;
                 //double height = (c as FrameworkElement).Height;
-                backupellipse.Height = Convert.ToDouble(Height.Text); //set width
-                backupellipse.Width = Convert.ToDouble(Width.Text); //set height
-                
+                Ellipse selEllipse = new Ellipse();
+                backupellipse.Height = Convert.ToDouble(selEllipse.Height); //set width
+                backupellipse.Width = Convert.ToDouble(selEllipse.Width); //set height
+
             }
         }
 
@@ -212,11 +214,11 @@ namespace tekenprogramma
     }
 
     //class make rectangle
-    public class MakeRectangle : ICommand
+    public class MakeRectangles : ICommand
     {
         private Commands mycommand;
 
-        public MakeRectangle(Commands mycommand)
+        public MakeRectangles(Commands mycommand)
         {
             this.mycommand = mycommand;
         }
@@ -228,11 +230,11 @@ namespace tekenprogramma
     }
 
     //class make ellipse
-    public class MakeEllipse : ICommand
+    public class MakeEllipses : ICommand
     {
         private Commands mycommand;
 
-        public MakeEllipse(Commands mycommand)
+        public MakeEllipses(Commands mycommand)
         {
             this.mycommand = mycommand;
         }
