@@ -145,6 +145,16 @@ namespace tekenprogramma
             moving = !moving;
         }
 
+        public void Saving()
+        {
+
+        }
+
+        public void Loading()
+        {
+
+        }
+
     }
 
 
@@ -242,6 +252,36 @@ namespace tekenprogramma
         public void Execute()
         {
             mycommand.MakeEllipse();
+        }
+    }
+
+    public class Saved : ICommand
+    {
+        private Commands mycommmand;
+
+        public Saved(Commands mycommand)
+        {
+            this.mycommmand = mycommmand;
+        }
+
+        public void Execute()
+        {
+            mycommand.Saving();
+        }
+    }
+
+    public class Loaded : ICommand
+    {
+        private Commands mycommmand;
+
+        public Loaded(Commands mycommand)
+        {
+            this.mycommmand = mycommmand;
+        }
+
+        public void Execute()
+        {
+            mycommand.Loading();
         }
     }
 }
