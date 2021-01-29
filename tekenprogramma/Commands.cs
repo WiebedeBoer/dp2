@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.Input;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace tekenprogramma
 {
@@ -13,11 +14,58 @@ namespace tekenprogramma
     public interface ICommand
     {
         void Execute();
+        void Undo();
+        void Redo();
     }
 
     //class commands
+    public class Invoker
+    {
+
+        private List<ICommand> actionsList = new List<ICommand>();
+        private List<ICommand> redoList = new List<ICommand>();
+
+        public Invoker()
+        {
+            this.actionsList = new List<ICommand>();
+            this.redoList = new List<ICommand>();
+
+        }
+
+        public void Execute(ICommand cmd)
+        {
+            actionsList.Add(cmd);
+            redoList.Clear();
+            cmd.Execute();
+        }
+
+        public void Undo()
+        {
+            if (actionsList.Count >= 1)
+            {
+                ICommand cmd = (ICommand)actionsList;
+                cmd.Undo();
+                actionsList.RemoveAt(0);
+                redoList.Add(cmd);
+            }
+        }
+
+        public void Redo()
+        {
+            if (redoList.Count >= 1)
+            {
+                ICommand cmd = (ICommand)redoList;
+                cmd.Redo();
+                redoList.RemoveAt(0);
+                actionsList.Add(cmd);
+            }
+        }
+
+    }
+
     public class Commands
     {
+
         private double cpx;
         private double cpy;
         private double top;
@@ -25,13 +73,11 @@ namespace tekenprogramma
 
         Rectangle backuprectangle; //rectangle shape
         Ellipse backupellipse; //ellipse shape
-
         string type = "Rectangle"; //default shape
+        bool moving = false;
 
         private List<ICommand> actionsList = new List<ICommand>();
         private List<ICommand> redoList = new List<ICommand>();
-
-        bool moving = false;
 
         //give smallest
         public double ReturnSmallest(double first, double last)
@@ -60,6 +106,16 @@ namespace tekenprogramma
             Canvas.SetTop(newRectangle, ReturnSmallest(top, cpy)); //set top position 
         }
 
+        public void undoRectangle()
+        {
+
+        }
+
+        public void redoRectangle()
+        {
+
+        }
+
         //create ellipse
         public void MakeEllipse()
         {
@@ -74,6 +130,17 @@ namespace tekenprogramma
             Canvas.SetTop(newEllipse, ReturnSmallest(top, cpy));//set top position
         }
 
+        public void undoEllipse()
+        {
+
+        }
+
+        public void redoEllipse()
+        {
+
+        }
+
+        /*
         //undo
         public void Undo()
         {
@@ -91,6 +158,7 @@ namespace tekenprogramma
             actionsList.Add(lastcommand); //add to undo list
             redoList.RemoveAt(LastInList); //remove from redo list
         }
+        */
 
         //resize
         public void Resize()
@@ -121,6 +189,16 @@ namespace tekenprogramma
             }
         }
 
+        public void undoResize()
+        {
+
+        }
+
+        public void redoResize()
+        {
+
+        }
+
         //moving
         public void Moving()
         {
@@ -145,11 +223,23 @@ namespace tekenprogramma
             moving = !moving;
         }
 
+        public void undoMoving()
+        {
+
+        }
+
+        public void redoMoving()
+        {
+
+        }
+
+        //saving
         public void Saving()
         {
 
         }
 
+        //loading
         public void Loading()
         {
 
@@ -157,7 +247,7 @@ namespace tekenprogramma
 
     }
 
-
+    /*
     //class undo
     public class Undo : ICommand
     {
@@ -189,6 +279,7 @@ namespace tekenprogramma
             mycommand.Redo();
         }
     }
+    */
 
 
     //class moving
@@ -204,6 +295,16 @@ namespace tekenprogramma
         public void Execute()
         {
             mycommand.Moving();
+        }
+
+        public void Undo()
+        {
+            mycommand.undoMoving();
+        }
+
+        public void Redo()
+        {
+            mycommand.redoMoving();
         }
     }
 
@@ -221,6 +322,16 @@ namespace tekenprogramma
         {
             mycommand.Resize();
         }
+
+        public void Undo()
+        {
+            mycommand.undoResize();
+        }
+
+        public void Redo()
+        {
+            mycommand.redoResize();
+        }
     }
 
     //class make rectangle
@@ -236,6 +347,16 @@ namespace tekenprogramma
         public void Execute()
         {
             mycommand.MakeRectangle();
+        }
+
+        public void Undo()
+        {
+            mycommand.undoRectangle();
+        }
+
+        public void Redo()
+        {
+            mycommand.redoRectangle();
         }
     }
 
@@ -253,18 +374,38 @@ namespace tekenprogramma
         {
             mycommand.MakeEllipse();
         }
+
+        public void Undo()
+        {
+            mycommand.undoEllipse();
+        }
+
+        public void Redo()
+        {
+            mycommand.redoEllipse();
+        }
     }
 
     public class Saved : ICommand
     {
-        private Commands mycommmand;
+        private Commands mycommand;
 
         public Saved(Commands mycommand)
         {
-            this.mycommmand = mycommmand;
+            this.mycommand = mycommand;
         }
 
         public void Execute()
+        {
+            mycommand.Saving();
+        }
+
+        public void Undo()
+        {
+            mycommand.Saving();
+        }
+
+        public void Redo()
         {
             mycommand.Saving();
         }
@@ -272,14 +413,24 @@ namespace tekenprogramma
 
     public class Loaded : ICommand
     {
-        private Commands mycommmand;
+        private Commands mycommand;
 
         public Loaded(Commands mycommand)
         {
-            this.mycommmand = mycommmand;
+            this.mycommand = mycommand;
         }
 
         public void Execute()
+        {
+            mycommand.Loading();
+        }
+
+        public void Undo()
+        {
+            mycommand.Loading();
+        }
+
+        public void Redo()
         {
             mycommand.Loading();
         }
