@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI.Input;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace tekenprogramma
 {
@@ -78,6 +79,10 @@ namespace tekenprogramma
 
         private List<ICommand> actionsList = new List<ICommand>();
         private List<ICommand> redoList = new List<ICommand>();
+
+        //file IO
+        private List<String> lines = new List<String>();
+        string path = @"c:\temp\MyTest.txt";
 
         //give smallest
         public double ReturnSmallest(double first, double last)
@@ -236,13 +241,22 @@ namespace tekenprogramma
         //saving
         public void Saving()
         {
-
+            if (!File.Exists(path))
+            {
+                // Create a file to write to.
+                File.WriteAllLines(path, lines);
+            }
         }
 
         //loading
         public void Loading()
         {
-
+            
+            string[] readText = File.ReadAllLines(path);
+            foreach (string s in readText)
+            {
+                //Console.WriteLine(s);
+            }
         }
 
     }
