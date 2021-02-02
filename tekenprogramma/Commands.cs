@@ -97,7 +97,23 @@ namespace tekenprogramma
             }
         }
 
-        //create rectangle
+        //rectangle
+        public void PlaceRectangle()
+        {
+
+        }
+
+        public void undoPlaceRectangle()
+        {
+
+        }
+
+        public void redoPlaceRectangle()
+        {
+
+        }
+
+
         public void MakeRectangle()
         {
             Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
@@ -121,7 +137,22 @@ namespace tekenprogramma
 
         }
 
-        //create ellipse
+        //ellipse
+        public void PlaceEllipse()
+        {
+
+        }
+
+        public void undoPlaceEllipse()
+        {
+
+        }
+
+        public void redoPlaceEllipse()
+        {
+
+        }
+
         public void MakeEllipse()
         {
             Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
@@ -259,6 +290,16 @@ namespace tekenprogramma
             }
         }
 
+        public void Selecting()
+        {
+
+        }
+
+        public void Unselecting()
+        {
+
+        }
+
     }
 
     /*
@@ -348,6 +389,32 @@ namespace tekenprogramma
         }
     }
 
+    //class place rectangle
+    public class PlaceRectangles : ICommand
+    {
+        private Commands mycommand;
+
+        public PlaceRectangles(Commands mycommand)
+        {
+            this.mycommand = mycommand;
+        }
+
+        public void Execute()
+        {
+            mycommand.PlaceRectangle();
+        }
+
+        public void Undo()
+        {
+            mycommand.undoPlaceRectangle();
+        }
+
+        public void Redo()
+        {
+            mycommand.redoPlaceRectangle();
+        }
+    }
+
     //class make rectangle
     public class MakeRectangles : ICommand
     {
@@ -400,6 +467,33 @@ namespace tekenprogramma
         }
     }
 
+    //class place ellipse
+    public class PlaceEllipses : ICommand
+    {
+        private Commands mycommand;
+
+        public PlaceEllipses(Commands mycommand)
+        {
+            this.mycommand = mycommand;
+        }
+
+        public void Execute()
+        {
+            mycommand.PlaceEllipse();
+        }
+
+        public void Undo()
+        {
+            mycommand.undoPlaceEllipse();
+        }
+
+        public void Redo()
+        {
+            mycommand.redoPlaceEllipse();
+        }
+    }
+
+    //class saving
     public class Saved : ICommand
     {
         private Commands mycommand;
@@ -416,12 +510,12 @@ namespace tekenprogramma
 
         public void Undo()
         {
-            mycommand.Saving();
+            //mycommand.Saving();
         }
 
         public void Redo()
         {
-            mycommand.Saving();
+            //mycommand.Saving();
         }
     }
 
@@ -441,12 +535,12 @@ namespace tekenprogramma
 
         public void Undo()
         {
-            mycommand.Loading();
+            //mycommand.Loading();
         }
 
         public void Redo()
         {
-            mycommand.Loading();
+            //mycommand.Loading();
         }
     }
 }
