@@ -8,6 +8,7 @@ using Windows.UI.Input;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace tekenprogramma
 {
@@ -98,9 +99,21 @@ namespace tekenprogramma
         }
 
         //rectangle
-        public void PlaceRectangle()
+        public void PlaceRectangle(object sender, PointerRoutedEventArgs e)
         {
-
+            FrameworkElement backupprep = e.OriginalSource as FrameworkElement;
+            if (backupprep.Name == "Rectangle")
+            {
+                Rectangle tmp = backupprep as Rectangle;
+                backuprectangle = tmp;
+                type = "Rectangle";
+            }
+            else if (backupprep.Name == "Ellipse")
+            {
+                Ellipse tmp = backupprep as Ellipse;
+                backupellipse = tmp;
+                type = "Ellipse";
+            }
         }
 
         public void undoPlaceRectangle()
@@ -138,9 +151,21 @@ namespace tekenprogramma
         }
 
         //ellipse
-        public void PlaceEllipse()
+        public void PlaceEllipse(object sender, PointerRoutedEventArgs e)
         {
-
+            FrameworkElement backupprep = e.OriginalSource as FrameworkElement;
+            if (backupprep.Name == "Rectangle")
+            {
+                Rectangle tmp = backupprep as Rectangle;
+                backuprectangle = tmp;
+                type = "Rectangle";
+            }
+            else if (backupprep.Name == "Ellipse")
+            {
+                Ellipse tmp = backupprep as Ellipse;
+                backupellipse = tmp;
+                type = "Ellipse";
+            }
         }
 
         public void undoPlaceEllipse()
@@ -286,8 +311,42 @@ namespace tekenprogramma
             string[] readText = File.ReadAllLines(path);
             foreach (string s in readText)
             {
-                //Console.WriteLine(s);
+               string[] line = Regex.Split(s, "\\s+");
+               if( line[0] == "Ellipse")
+               {
+                    this.GetEllipse(s);
+               }
+               else
+               {
+                    this.GetRectangle(s);
+               }
             }
+        }
+
+        public Ellipse GetEllipse(String lines)
+        {
+            string[] line = Regex.Split(lines, "\\s+");
+            Ellipse shape = new Ellipse();
+
+            Canvas.SetLeft(shape, Convert.ToInt32(line[1]));
+            Canvas.SetTop(shape, Convert.ToInt32(line[2]));
+            shape.Width = Convert.ToInt32(line[3]);
+            shape.Height = Convert.ToInt32(line[4]);
+            
+            return shape;
+        }
+
+        public Rectangle GetRectangle(String lines)
+        {
+            string[] line = Regex.Split(lines,"\\s+");
+            Rectangle shape = new Rectangle();
+
+            Canvas.SetLeft(shape, Convert.ToInt32(line[1]));
+            Canvas.SetTop(shape, Convert.ToInt32(line[2]));
+            shape.Width = Convert.ToInt32(line[3]);
+            shape.Height = Convert.ToInt32(line[4]);
+
+            return shape;
         }
 
         public void Selecting()
