@@ -399,10 +399,12 @@ namespace tekenprogramma
     //class moving
     public class Moving : ICommand
     {
+        private Invoker invoker;
         private Commands mycommand;
 
         public Moving(Commands mycommand)
         {
+            this.invoker = invoker;
             this.mycommand = mycommand;
         }
 
@@ -451,16 +453,29 @@ namespace tekenprogramma
     //class place rectangle
     public class PlaceRectangles : ICommand
     {
+        private Invoker invoker;
         private Commands mycommand;
+        private object sender;
+        private PointerRoutedEventArgs e;
 
-        public PlaceRectangles(Commands mycommand)
+        /*
+        public PlaceRectangles(Invoker invoker, Commands mycommand)
         {
+            this.invoker = invoker;
             this.mycommand = mycommand;
+        }
+        */
+
+        public PlaceRectangles(Invoker invoker, object sender, PointerRoutedEventArgs e)
+        {
+            this.invoker = invoker;
+            this.sender = sender;
+            this.e = e;
         }
 
         public void Execute()
         {
-            mycommand.PlaceRectangle();
+            mycommand.PlaceRectangle(sender,e);
         }
 
         public void Undo()

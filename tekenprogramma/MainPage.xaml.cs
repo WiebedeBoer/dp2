@@ -18,6 +18,8 @@ namespace tekenprogramma
         Rectangle backuprectangle;
         Ellipse backupellipse;
 
+        public Invoker invoker = new Invoker();
+
         public MainPage()
         {
             InitializeComponent();
@@ -26,11 +28,22 @@ namespace tekenprogramma
         private void Drawing_pressed(object sender, PointerRoutedEventArgs e)
         {
             FrameworkElement backupprep = e.OriginalSource as FrameworkElement;
+            
             if (backupprep.Name == "Rectangle")
             {
+                /*
                 Rectangle tmp = backupprep as Rectangle;
                 backuprectangle = tmp;
                 type = "Rectangle";
+                */
+
+
+                ICommand place = new PlaceRectangles(invoker,sender,e);
+                invoker.Execute(place);
+
+                //Add(place.backupprep);
+
+                //this.shapes.add(place.shape);
             }
             else if(backupprep.Name == "Ellipse")
             {
