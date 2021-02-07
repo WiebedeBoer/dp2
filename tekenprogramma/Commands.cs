@@ -127,8 +127,9 @@ namespace tekenprogramma
         }
 
 
-        public void MakeRectangle()
+        public void MakeRectangle(double left, double top, Canvas paintSurface)
         {
+            
             Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
             newRectangle.Height = Math.Abs(cpy - top); //set height
             newRectangle.Width = Math.Abs(cpx - left); //set width
@@ -138,6 +139,9 @@ namespace tekenprogramma
             newRectangle.Name = "Rectangle"; //attach name
             Canvas.SetLeft(newRectangle, ReturnSmallest(left, cpx)); //set left position
             Canvas.SetTop(newRectangle, ReturnSmallest(top, cpy)); //set top position 
+            //newRectangle.PointerPressed += Drawing_pressed;
+            paintSurface.Children.Add(newRectangle);
+            //Rectangle.Content = paintSurface.Children[0].Opacity;
         }
 
         public void undoRectangle()
@@ -178,8 +182,9 @@ namespace tekenprogramma
 
         }
 
-        public void MakeEllipse()
+        public void MakeEllipse(double left, double top, Canvas paintSurface)
         {
+            
             Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
             newEllipse.Height = Math.Abs(cpy - top);//set height
             newEllipse.Width = Math.Abs(cpx - left);//set width
@@ -189,6 +194,8 @@ namespace tekenprogramma
             newEllipse.Name = "Ellipse";//attach name
             Canvas.SetLeft(newEllipse, ReturnSmallest(left, cpx));//set left position
             Canvas.SetTop(newEllipse, ReturnSmallest(top, cpy));//set top position
+            //newEllipse.PointerPressed += Drawing_pressed;
+            paintSurface.Children.Add(newEllipse);
         }
 
         public void undoEllipse()
@@ -222,7 +229,7 @@ namespace tekenprogramma
         */
 
         //resize
-        public void Resize()
+        public void Resize(Canvas paintSurface)
         {
             //if rectangle
             if (type == "Rectangle")
@@ -234,6 +241,8 @@ namespace tekenprogramma
                 Rectangle selRect = new Rectangle();
                 backuprectangle.Height = Convert.ToDouble(selRect.Height); //set width
                 backuprectangle.Width = Convert.ToDouble(selRect.Width); //set height
+                paintSurface.Children.Remove(backuprectangle);
+                paintSurface.Children.Add(backuprectangle);
 
             }
             //else if ellipse
@@ -246,7 +255,8 @@ namespace tekenprogramma
                 Ellipse selEllipse = new Ellipse();
                 backupellipse.Height = Convert.ToDouble(selEllipse.Height); //set width
                 backupellipse.Width = Convert.ToDouble(selEllipse.Width); //set height
-
+                paintSurface.Children.Remove(backupellipse);
+                paintSurface.Children.Add(backupellipse);
             }
         }
 
@@ -261,8 +271,10 @@ namespace tekenprogramma
         }
 
         //moving
-        public void Moving()
+        public void Moving(object sender, PointerRoutedEventArgs e, Canvas paintSurface)
         {
+
+            /*
             //cpx = e.GetCurrentPoint(paintSurface).Position.X; //x coordinate canvas
             //cpy = e.GetCurrentPoint(paintSurface).Position.Y; //y coordinate canvas
             //double top = Canvas.GetTop(c as FrameworkElement);
@@ -280,6 +292,25 @@ namespace tekenprogramma
                 Canvas.SetTop(backupellipse, top);
                 //paintSurface.Children.Remove(backupellipse); //remove the backup
                 //paintSurface.Children.Add(backupellipse); //add the new backup shape
+            }
+            moving = !moving;
+            */
+
+            cpx = e.GetCurrentPoint(paintSurface).Position.X;
+            cpy = e.GetCurrentPoint(paintSurface).Position.Y;
+            if (type == "Rectangle")
+            {
+                Canvas.SetLeft(backuprectangle, cpx);
+                Canvas.SetTop(backuprectangle, cpy);
+                paintSurface.Children.Remove(backuprectangle);
+                paintSurface.Children.Add(backuprectangle);
+            }
+            else if (type == "Ellipse")
+            {
+                Canvas.SetLeft(backupellipse, cpx);
+                Canvas.SetTop(backupellipse, cpy);
+                paintSurface.Children.Remove(backupellipse);
+                paintSurface.Children.Add(backupellipse);
             }
             moving = !moving;
         }
@@ -401,16 +432,20 @@ namespace tekenprogramma
     {
         private Invoker invoker;
         private Commands mycommand;
+        private object sender;
+        private PointerRoutedEventArgs e;
+        private Canvas paintSurface;
 
-        public Moving(Commands mycommand)
+        public Moving(Invoker invoker, object sender, PointerRoutedEventArgs e)
         {
             this.invoker = invoker;
-            this.mycommand = mycommand;
+            this.sender = sender;
+            this.e = e;
         }
 
         public void Execute()
         {
-            mycommand.Moving();
+            mycommand.Moving(sender,e,paintSurface);
         }
 
         public void Undo()
@@ -428,15 +463,17 @@ namespace tekenprogramma
     public class Resize : ICommand
     {
         private Commands mycommand;
+        private Canvas paintSurface;
 
-        public Resize(Commands mycommand)
+        public Resize(Commands mycommand, Canvas paintSurface)
         {
             this.mycommand = mycommand;
+            this.paintSurface = paintSurface;
         }
 
         public void Execute()
         {
-            mycommand.Resize();
+            mycommand.Resize(paintSurface);
         }
 
         public void Undo()
@@ -457,6 +494,7 @@ namespace tekenprogramma
         private Commands mycommand;
         private object sender;
         private PointerRoutedEventArgs e;
+
 
         /*
         public PlaceRectangles(Invoker invoker, Commands mycommand)
@@ -492,16 +530,23 @@ namespace tekenprogramma
     //class make rectangle
     public class MakeRectangles : ICommand
     {
+        private Invoker invoker;
         private Commands mycommand;
+        private Canvas paintSurface;
+        private double left;
+        private double top;
 
-        public MakeRectangles(Commands mycommand)
+        public MakeRectangles(double left, double top, Canvas paintSurface)
         {
             this.mycommand = mycommand;
+            this.left = left;
+            this.top = top;
+            this.paintSurface = paintSurface;
         }
 
         public void Execute()
         {
-            mycommand.MakeRectangle();
+            mycommand.MakeRectangle(left,top,paintSurface);
         }
 
         public void Undo()
@@ -518,16 +563,23 @@ namespace tekenprogramma
     //class make ellipse
     public class MakeEllipses : ICommand
     {
+        private Invoker invoker;
         private Commands mycommand;
+        private Canvas paintSurface;
+        private double left;
+        private double top;
 
-        public MakeEllipses(Commands mycommand)
+        public MakeEllipses(double left, double top, Canvas paintSurface)
         {
             this.mycommand = mycommand;
+            this.left = left;
+            this.top = top;
+            this.paintSurface = paintSurface;
         }
 
         public void Execute()
         {
-            mycommand.MakeEllipse();
+            mycommand.MakeEllipse(left, top, paintSurface);
         }
 
         public void Undo()
@@ -544,16 +596,21 @@ namespace tekenprogramma
     //class place ellipse
     public class PlaceEllipses : ICommand
     {
+        private Invoker invoker;
         private Commands mycommand;
+        private object sender;
+        private PointerRoutedEventArgs e;
 
-        public PlaceEllipses(Commands mycommand)
+        public PlaceEllipses(Invoker invoker, object sender, PointerRoutedEventArgs e)
         {
-            this.mycommand = mycommand;
+            this.invoker = invoker;
+            this.sender = sender;
+            this.e = e;
         }
 
         public void Execute()
         {
-            mycommand.PlaceEllipse();
+            mycommand.PlaceEllipse(sender,e);
         }
 
         public void Undo()
@@ -572,7 +629,7 @@ namespace tekenprogramma
     {
         private Commands mycommand;
 
-        public Saved(Commands mycommand)
+        public Saved()
         {
             this.mycommand = mycommand;
         }
@@ -597,7 +654,7 @@ namespace tekenprogramma
     {
         private Commands mycommand;
 
-        public Loaded(Commands mycommand)
+        public Loaded()
         {
             this.mycommand = mycommand;
         }
