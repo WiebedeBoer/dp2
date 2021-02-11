@@ -20,6 +20,8 @@ namespace tekenprogramma
 
         public Invoker invoker = new Invoker();
 
+
+
         public MainPage()
         {
             InitializeComponent();
@@ -203,27 +205,29 @@ namespace tekenprogramma
         //undo
         private void Undo_Click(object sender, RoutedEventArgs e)
         {
-
+            invoker.Undo();
         }
 
         //redo
         private void Redo_Click(object sender, RoutedEventArgs e)
         {
-
+            invoker.Redo();
         }
 
         //save
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            ICommand place = new Saved();
+            ICommand place = new Saved(paintSurface);
             invoker.Execute(place);
         }
 
         //load
-        private void Load_Click(object sender, RoutedEventArgs e)
+        private Canvas Load_Click(object sender, RoutedEventArgs e)
         {
-            ICommand place = new Loaded();
+            paintSurface.Children.Clear();
+            ICommand place = new Loaded(paintSurface);
             invoker.Execute(place);
+            return paintSurface;
         }
 
         //resize
