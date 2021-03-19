@@ -137,7 +137,9 @@ namespace tekenprogramma
             newEllipse.PointerPressed += Drawing_pressed;
             paintSurface.Children.Add(newEllipse);
             */
-            ICommand place = new MakeEllipses(left, top,paintSurface);
+            Commands command = null;
+            //command = new Ellipse(left,top);
+            ICommand place = new MakeEllipses(command, left, top,paintSurface,invoker);
             invoker.Execute(place);
         }
         
@@ -222,12 +224,12 @@ namespace tekenprogramma
         }
 
         //load
-        private Canvas Load_Click(object sender, RoutedEventArgs e)
+        private void Load_Click(object sender, RoutedEventArgs e)
         {
             paintSurface.Children.Clear();
             ICommand place = new Loaded(paintSurface);
             invoker.Execute(place);
-            return paintSurface;
+            //return paintSurface;
         }
 
         //resize

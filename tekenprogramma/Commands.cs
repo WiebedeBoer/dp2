@@ -82,6 +82,8 @@ namespace tekenprogramma
         private List<ICommand> actionsList = new List<ICommand>();
         private List<ICommand> redoList = new List<ICommand>();
 
+        public Invoker invoker;
+
         //file IO
         private List<String> lines = new List<String>();
         //string path = @"c:\temp\MyTest.txt";
@@ -188,7 +190,7 @@ namespace tekenprogramma
             this.Redo();
         }
 
-        public void MakeEllipse(double left, double top, Canvas paintSurface)
+        public void MakeEllipse(double left, double top, Canvas paintSurface, Invoker invoker)
         {
             
             Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
@@ -211,10 +213,10 @@ namespace tekenprogramma
             paintSurface.Children.Remove(newEllipse);
         }
 
-        public void redoEllipse(double left, double top, Canvas paintSurface)
+        public void redoEllipse(double left, double top, Canvas paintSurface, Invoker invoker)
         {
             this.Redo();
-            this.MakeEllipse(left, top, paintSurface);
+            this.MakeEllipse(left, top, paintSurface,invoker);
         }
 
         //resize
@@ -260,7 +262,7 @@ namespace tekenprogramma
             {
                 Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
                 paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
-                this.MakeEllipse(left, top, paintSurface);
+                this.MakeEllipse(left, top, paintSurface,invoker);
             }
             
         }
@@ -328,7 +330,7 @@ namespace tekenprogramma
             {
                 Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
                 paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
-                this.MakeEllipse(left, top, paintSurface);
+                this.MakeEllipse(left, top, paintSurface,invoker);
             }
         }
 
@@ -566,27 +568,28 @@ namespace tekenprogramma
         private double left;
         private double top;
 
-        public MakeEllipses(double left, double top, Canvas paintSurface)
+        public MakeEllipses(Commands mycommand, double left, double top, Canvas paintSurface, Invoker invoker)
         {
             this.mycommand = mycommand;
             this.left = left;
             this.top = top;
             this.paintSurface = paintSurface;
+            this.invoker = invoker;
         }
 
         public void Execute()
         {
-            mycommand.MakeEllipse(left, top, paintSurface);
+            this.mycommand.MakeEllipse(this.left, this.top, this.paintSurface,this.invoker);
         }
 
         public void Undo()
         {
-            mycommand.undoEllipse(paintSurface);
+            this.mycommand.undoEllipse(this.paintSurface);
         }
 
         public void Redo()
         {
-            mycommand.redoEllipse(left, top, paintSurface);
+            this.mycommand.redoEllipse(this.left, this.top, this.paintSurface,this.invoker);
         }
     }
 
