@@ -39,8 +39,8 @@ namespace tekenprogramma
                 type = "Rectangle";
                 */
 
-
-                ICommand place = new PlaceRectangles(invoker,sender,e);
+                Commands command = null;
+                ICommand place = new PlaceRectangles(command, invoker,sender,e);
                 invoker.Execute(place);
 
 
@@ -52,8 +52,8 @@ namespace tekenprogramma
                 backupellipse = tmp;
                 type = "Ellipse";
                 */
-
-                ICommand place = new PlaceEllipses(invoker, sender, e);
+                Commands command = null;
+                ICommand place = new PlaceEllipses(command, invoker, sender, e);
                 invoker.Execute(place);
             }
             if (moving)
@@ -77,7 +77,8 @@ namespace tekenprogramma
                 }
                 moving = !moving;
                 */
-                ICommand place = new Moving(invoker, sender, e);
+                Commands command = null;
+                ICommand place = new Moving(command, invoker, sender, e);
                 invoker.Execute(place);
             }
             else
@@ -118,7 +119,8 @@ namespace tekenprogramma
             paintSurface.Children.Add(newRectangle);
             Rectangle.Content = paintSurface.Children[0].Opacity;
             */
-            ICommand place = new MakeRectangles(left,top,paintSurface);
+            Commands command = null;
+            ICommand place = new MakeRectangles(command,left,top,paintSurface,invoker);
             invoker.Execute(place);
         }
 
@@ -219,7 +221,8 @@ namespace tekenprogramma
         //save
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            ICommand place = new Saved(paintSurface);
+            Commands command = null;
+            ICommand place = new Saved(command, paintSurface);
             invoker.Execute(place);
         }
 
@@ -227,7 +230,8 @@ namespace tekenprogramma
         private void Load_Click(object sender, RoutedEventArgs e)
         {
             paintSurface.Children.Clear();
-            ICommand place = new Loaded(paintSurface);
+            Commands command = null;
+            ICommand place = new Loaded(command, paintSurface);
             invoker.Execute(place);
             //return paintSurface;
         }

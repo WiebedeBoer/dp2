@@ -132,7 +132,7 @@ namespace tekenprogramma
         }
 
 
-        public void MakeRectangle(double left, double top, Canvas paintSurface)
+        public void MakeRectangle(double left, double top, Canvas paintSurface, Invoker invoker)
         {
             
             Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
@@ -159,7 +159,7 @@ namespace tekenprogramma
         public void redoRectangle(double left, double top, Canvas paintSurface)
         {
             this.Redo();
-            this.MakeRectangle(left, top, paintSurface);
+            this.MakeRectangle(left, top, paintSurface,invoker);
         }
 
         //ellipse
@@ -256,7 +256,7 @@ namespace tekenprogramma
             {
                 Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
                 paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
-                this.MakeRectangle(left, top, paintSurface);
+                this.MakeRectangle(left, top, paintSurface,invoker);
             }
             else if (type =="Ellipse")
             {
@@ -324,7 +324,7 @@ namespace tekenprogramma
             {
                 Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
                 paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
-                this.MakeRectangle(left, top, paintSurface);
+                this.MakeRectangle(left, top, paintSurface,invoker);
             }
             else if (type == "Ellipse")
             {
@@ -440,26 +440,27 @@ namespace tekenprogramma
         private PointerRoutedEventArgs e;
         private Canvas paintSurface;
 
-        public Moving(Invoker invoker, object sender, PointerRoutedEventArgs e)
+        public Moving(Commands mycommand, Invoker invoker, object sender, PointerRoutedEventArgs e)
         {
             this.invoker = invoker;
             this.sender = sender;
             this.e = e;
+            this.mycommand = mycommand;
         }
 
         public void Execute()
         {
-            mycommand.Moving(sender,e,paintSurface);
+            this.mycommand.Moving(sender,e,paintSurface);
         }
 
         public void Undo()
         {
-            mycommand.undoMoving(sender, e, paintSurface);
+            this.mycommand.undoMoving(sender, e, paintSurface);
         }
 
         public void Redo()
         {
-            mycommand.redoMoving(sender, e, paintSurface);
+            this.mycommand.redoMoving(sender, e, paintSurface);
         }
     }
 
@@ -472,26 +473,27 @@ namespace tekenprogramma
         private PointerRoutedEventArgs e;
         private Canvas paintSurface;
 
-        public Resize(Invoker invoker, object sender, PointerRoutedEventArgs e)
+        public Resize(Commands mycommand, Invoker invoker, object sender, PointerRoutedEventArgs e)
         {
             this.invoker = invoker;
             this.sender = sender;
             this.e = e;
+            this.mycommand = mycommand;
         }
 
         public void Execute()
         {
-            mycommand.Resize(sender, e, paintSurface);
+            this.mycommand.Resize(sender, e, paintSurface);
         }
 
         public void Undo()
         {
-            mycommand.undoResize(sender, e, paintSurface);
+            this.mycommand.undoResize(sender, e, paintSurface);
         }
 
         public void Redo()
         {
-            mycommand.redoResize(sender, e, paintSurface);
+            this.mycommand.redoResize(sender, e, paintSurface);
         }
     }
 
@@ -503,26 +505,27 @@ namespace tekenprogramma
         private object sender;
         private PointerRoutedEventArgs e;
 
-        public PlaceRectangles(Invoker invoker, object sender, PointerRoutedEventArgs e)
+        public PlaceRectangles(Commands mycommand, Invoker invoker, object sender, PointerRoutedEventArgs e)
         {
             this.invoker = invoker;
             this.sender = sender;
             this.e = e;
+            this.mycommand = mycommand;
         }
 
         public void Execute()
         {
-            mycommand.PlaceRectangle(sender,e);
+            this.mycommand.PlaceRectangle(sender,e);
         }
 
         public void Undo()
         {
-            mycommand.undoPlaceRectangle();
+            this.mycommand.undoPlaceRectangle();
         }
 
         public void Redo()
         {
-            mycommand.redoPlaceRectangle();
+            this.mycommand.redoPlaceRectangle();
         }
     }
 
@@ -535,27 +538,28 @@ namespace tekenprogramma
         private double left;
         private double top;
 
-        public MakeRectangles(double left, double top, Canvas paintSurface)
+        public MakeRectangles(Commands mycommand, double left, double top, Canvas paintSurface, Invoker invoker)
         {
             this.mycommand = mycommand;
             this.left = left;
             this.top = top;
             this.paintSurface = paintSurface;
+            this.invoker = invoker;
         }
 
         public void Execute()
         {
-            mycommand.MakeRectangle(left,top,paintSurface);
+            this.mycommand.MakeRectangle(this.left,this.top,this.paintSurface,this.invoker);
         }
 
         public void Undo()
         {
-            mycommand.undoRectangle(paintSurface);
+            this.mycommand.undoRectangle(paintSurface);
         }
 
         public void Redo()
         {
-            mycommand.redoRectangle(left,top,paintSurface);
+            this.mycommand.redoRectangle(left,top,paintSurface);
         }
     }
 
@@ -601,26 +605,27 @@ namespace tekenprogramma
         private object sender;
         private PointerRoutedEventArgs e;
 
-        public PlaceEllipses(Invoker invoker, object sender, PointerRoutedEventArgs e)
+        public PlaceEllipses(Commands mycommand, Invoker invoker, object sender, PointerRoutedEventArgs e)
         {
             this.invoker = invoker;
             this.sender = sender;
             this.e = e;
+            this.mycommand = mycommand;
         }
 
         public void Execute()
         {
-            mycommand.PlaceEllipse(sender,e);
+            this.mycommand.PlaceEllipse(sender,e);
         }
 
         public void Undo()
         {
-            mycommand.undoPlaceEllipse();
+            this.mycommand.undoPlaceEllipse();
         }
 
         public void Redo()
         {
-            mycommand.redoPlaceEllipse();
+            this.mycommand.redoPlaceEllipse();
         }
     }
 
@@ -630,7 +635,7 @@ namespace tekenprogramma
         private Commands mycommand;
         private Canvas paintSurface;
 
-        public Saved(Canvas paintSurface)
+        public Saved(Commands mycommand, Canvas paintSurface)
         {
             this.mycommand = mycommand;
             this.paintSurface = paintSurface;
@@ -638,17 +643,17 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            mycommand.Saving(paintSurface);
+            this.mycommand.Saving(paintSurface);
         }
 
         public void Undo()
         {
-            paintSurface.Children.Clear();
+            this.paintSurface.Children.Clear();
         }
 
         public void Redo()
         {
-            paintSurface.Children.Clear();
+            this.paintSurface.Children.Clear();
         }
     }
 
@@ -657,7 +662,7 @@ namespace tekenprogramma
         private Commands mycommand;
         private Canvas paintSurface;
 
-        public Loaded(Canvas paintSurface)
+        public Loaded(Commands mycommand, Canvas paintSurface)
         {
             this.mycommand = mycommand;
             this.paintSurface = paintSurface;
@@ -665,17 +670,17 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            mycommand.Loading(paintSurface);
+            this.mycommand.Loading(paintSurface);
         }
 
         public void Undo()
         {
-            paintSurface.Children.Clear();
+            this.paintSurface.Children.Clear();
         }
 
         public void Redo()
         {
-            paintSurface.Children.Clear();
+            this.paintSurface.Children.Clear();
         }
     }
 
