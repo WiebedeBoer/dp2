@@ -532,6 +532,34 @@ namespace tekenprogramma
     //class make rectangle
     public class MakeRectangles : ICommand
     {
+        private Shape shape;
+
+
+        public MakeRectangles(Shape shape)
+        {
+            this.shape = shape;
+        }
+
+        public void Execute()
+        {
+            this.shape.place();
+        }
+
+        public void Undo()
+        {
+            this.shape.remove();
+        }
+
+        public void Redo()
+        {
+            this.shape.place();
+        }
+    }
+
+    /*
+    //class make rectangle
+    public class MakeRectangles : ICommand
+    {
         private Invoker invoker;
         private Commands mycommand;
         private Canvas paintSurface;
@@ -562,6 +590,7 @@ namespace tekenprogramma
             this.mycommand.redoRectangle(left,top,paintSurface);
         }
     }
+    */
 
     //class make ellipse
     public class MakeEllipses : ICommand

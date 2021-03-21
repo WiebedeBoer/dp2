@@ -38,10 +38,10 @@ namespace tekenprogramma
                 backuprectangle = tmp;
                 type = "Rectangle";
                 */
-
-                Commands command = null;
-                ICommand place = new PlaceRectangles(command, invoker,sender,e);
-                invoker.Execute(place);
+                Shape shape = new Shape(cpx, cpy, e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y);
+                ICommand place = new MakeRectangles(shape);
+                //ICommand place = new PlaceRectangles(command, invoker,sender,e);
+                this.invoker.Execute(place);
 
 
             }
@@ -52,6 +52,7 @@ namespace tekenprogramma
                 backupellipse = tmp;
                 type = "Ellipse";
                 */
+                Shape shape = new Shape(cpx, cpy, e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y);
                 Commands command = null;
                 ICommand place = new PlaceEllipses(command, invoker, sender, e);
                 invoker.Execute(place);
