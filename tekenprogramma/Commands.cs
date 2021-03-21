@@ -65,6 +65,7 @@ namespace tekenprogramma
 
     }
 
+    /*
     //class commands
     public class Commands
     {
@@ -429,7 +430,186 @@ namespace tekenprogramma
 
     }
 
+    */
 
+
+    //class make rectangle
+    public class MakeRectangles : ICommand
+    {
+        private Shape shape;
+
+
+        public MakeRectangles(Shape shape)
+        {
+            this.shape = shape;
+        }
+
+        public void Execute()
+        {
+            this.shape.makeRectangle(left, top, paintSurface);
+        }
+
+        public void Undo()
+        {
+            this.shape.remove();
+        }
+
+        public void Redo()
+        {
+            this.shape.makeRectangle(left, top, paintSurface);
+        }
+    }
+
+    //class place rectangle
+    public class PlaceRectangles : ICommand
+    {
+        private Shape shape;
+        private Canvas paintSurface;
+        private Invoker invoker;
+
+
+        public PlaceRectangles(Shape shape,Canvas paintSurface, Invoker invoker)
+        {
+            this.shape = shape;
+            this.paintSurface = paintSurface;
+            this.invoker = invoker;
+        }
+
+        public void Execute()
+        {
+            this.shape.place(this.paintSurface,this.invoker);
+        }
+
+        public void Undo()
+        {
+            this.shape.remove();
+        }
+
+        public void Redo()
+        {
+            this.shape.place(this.paintSurface,this.invoker);
+        }
+    }
+
+    //class make ellipse
+    public class MakeEllipses : ICommand
+    {
+        private Shape shape;
+
+
+        public MakeEllipses(Shape shape)
+        {
+            this.shape = shape;
+        }
+
+        public void Execute()
+        {
+            this.shape.makeEllipse(left,top,paintSurface);
+        }
+
+        public void Undo()
+        {
+            this.shape.remove();
+        }
+
+        public void Redo()
+        {
+            this.shape.makeEllipse(left, top, paintSurface);
+        }
+    }
+
+    //class place rectangle
+    public class PlaceEllipses : ICommand
+    {
+        private Shape shape;
+        private Canvas paintSurface;
+        private Invoker invoker;
+
+
+        public PlaceEllipses(Shape shape, Canvas paintSurface, Invoker invoker)
+        {
+            this.shape = shape;
+            this.paintSurface = paintSurface;
+            this.invoker = invoker;
+        }
+
+        public void Execute()
+        {
+            this.shape.place(this.paintSurface, this.invoker);
+        }
+
+        public void Undo()
+        {
+            this.shape.remove();
+        }
+
+        public void Redo()
+        {
+            this.shape.place(this.paintSurface, this.invoker);
+        }
+    }
+
+    //class moving
+    public class Moving : ICommand
+    {
+
+        private PointerRoutedEventArgs e;
+        private Shape shape;
+
+        public Moving(Shape shape, PointerRoutedEventArgs e)
+        {
+            this.e = e;
+            this.shape = shape;
+        }
+
+        public void Execute()
+        {
+            this.shape.moving(this.e);
+        }
+
+        public void Undo()
+        {
+            this.shape.undoMoving();
+        }
+
+        public void Redo()
+        {
+            this.shape.redoMoving();
+        }
+    }
+
+    //class resize
+    public class Resize : ICommand
+    {
+
+        private PointerRoutedEventArgs e;
+        private Shape shape;
+
+        public Resize(Shape shape, PointerRoutedEventArgs e)
+        {
+
+            this.e = e;
+            this.shape = shape;
+        }
+
+        public void Execute()
+        {
+            this.shape.resize(this.e);
+        }
+
+        public void Undo()
+        {
+            this.shape.undoResize();
+        }
+
+        public void Redo()
+        {
+            this.shape.redoResize();
+        }
+    }
+
+
+    /*
 
     //class moving
     public class Moving : ICommand
@@ -529,34 +709,9 @@ namespace tekenprogramma
         }
     }
 
-    //class make rectangle
-    public class MakeRectangles : ICommand
-    {
-        private Shape shape;
 
 
-        public MakeRectangles(Shape shape)
-        {
-            this.shape = shape;
-        }
-
-        public void Execute()
-        {
-            this.shape.place();
-        }
-
-        public void Undo()
-        {
-            this.shape.remove();
-        }
-
-        public void Redo()
-        {
-            this.shape.place();
-        }
-    }
-
-    /*
+    
     //class make rectangle
     public class MakeRectangles : ICommand
     {
@@ -590,7 +745,7 @@ namespace tekenprogramma
             this.mycommand.redoRectangle(left,top,paintSurface);
         }
     }
-    */
+    
 
     //class make ellipse
     public class MakeEllipses : ICommand
@@ -712,6 +867,7 @@ namespace tekenprogramma
             this.paintSurface.Children.Clear();
         }
     }
+    */
 
     /*
     //class undo
