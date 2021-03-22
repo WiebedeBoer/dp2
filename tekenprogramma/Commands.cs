@@ -24,8 +24,9 @@ namespace tekenprogramma
     public class Invoker
     {
 
-        private List<ICommand> actionsList = new List<ICommand>();
+        public List<ICommand> actionsList = new List<ICommand>();
         private List<ICommand> redoList = new List<ICommand>();
+        //public List<Shape> shapesList = new List<Shape>();
 
         public Invoker()
         {
@@ -45,18 +46,26 @@ namespace tekenprogramma
         {
             if (actionsList.Count >= 1)
             {
-                ICommand cmd = (ICommand)actionsList;
+                //ICommand cmd = (ICommand)actionsList;
+                ICommand cmd = actionsList.First();
                 cmd.Undo();
                 actionsList.RemoveAt(0);
                 redoList.Add(cmd);
+                foreach (ICommand icmd in actionsList)
+                {
+                    icmd.Execute();
+                }
             }
+
+
         }
 
         public void Redo()
         {
             if (redoList.Count >= 1)
             {
-                ICommand cmd = (ICommand)redoList;
+                //ICommand cmd = (ICommand)redoList;
+                ICommand cmd = redoList.First();
                 cmd.Redo();
                 redoList.RemoveAt(0);
                 actionsList.Add(cmd);
@@ -439,12 +448,14 @@ namespace tekenprogramma
         private Shape shape;
         private Invoker invoker;
         private Canvas paintSurface;
+        private PointerRoutedEventArgs e;
 
         public MakeRectangles(Shape shape, Invoker invoker, Canvas paintSurface)
         {
             this.shape = shape;
             this.invoker = invoker;
             this.paintSurface = paintSurface;
+            this.e = e;
         }
 
         public void Execute()
@@ -454,7 +465,7 @@ namespace tekenprogramma
 
         public void Undo()
         {
-            this.shape.remove();
+            this.shape.removeRectangle(this.invoker, this.paintSurface);
         }
 
         public void Redo()
@@ -517,7 +528,7 @@ namespace tekenprogramma
 
         public void Undo()
         {
-            this.shape.remove();
+            this.shape.removeEllipse(this.invoker);
         }
 
         public void Redo()
@@ -615,6 +626,122 @@ namespace tekenprogramma
         public void Redo()
         {
             this.shape.redoResize(e);
+        }
+    }
+
+    //class select
+    public class Select : ICommand
+    {
+
+        private PointerRoutedEventArgs e;
+        private Shape shape;
+
+        public Select(Shape shape, PointerRoutedEventArgs e)
+        {
+
+            this.e = e;
+            this.shape = shape;
+        }
+
+        public void Execute()
+        {
+            this.shape.select(this.e);
+        }
+
+        public void Undo()
+        {
+            this.shape.deselect(this.e);
+        }
+
+        public void Redo()
+        {
+            this.shape.select(this.e);
+        }
+    }
+
+    //class deselect
+    public class Deselect : ICommand
+    {
+
+        private PointerRoutedEventArgs e;
+        private Shape shape;
+
+        public Deselect(Shape shape, PointerRoutedEventArgs e)
+        {
+
+            this.e = e;
+            this.shape = shape;
+        }
+
+        public void Execute()
+        {
+            this.shape.deselect(this.e);
+        }
+
+        public void Undo()
+        {
+            this.shape.select(this.e);
+        }
+
+        public void Redo()
+        {
+            this.shape.deselect(this.e);
+        }
+    }
+
+    //class saving
+    public class Saved : ICommand
+    {
+        private Shape mycommand;
+        private Canvas paintSurface;
+
+        public Saved(Shape mycommand, Canvas paintSurface)
+        {
+            this.mycommand = mycommand;
+            this.paintSurface = paintSurface;
+        }
+
+        public void Execute()
+        {
+            this.mycommand.saving(paintSurface);
+        }
+
+        public void Undo()
+        {
+            this.paintSurface.Children.Clear();
+        }
+
+        public void Redo()
+        {
+            this.paintSurface.Children.Clear();
+        }
+    }
+
+    //class load
+    public class Loaded : ICommand
+    {
+        private Shape mycommand;
+        private Canvas paintSurface;
+
+        public Loaded(Shape mycommand, Canvas paintSurface)
+        {
+            this.mycommand = mycommand;
+            this.paintSurface = paintSurface;
+        }
+
+        public void Execute()
+        {
+            this.mycommand.loading(paintSurface);
+        }
+
+        public void Undo()
+        {
+            this.paintSurface.Children.Clear();
+        }
+
+        public void Redo()
+        {
+            this.paintSurface.Children.Clear();
         }
     }
 
@@ -822,62 +949,10 @@ namespace tekenprogramma
             this.mycommand.redoPlaceEllipse();
         }
     }
-
-    //class saving
-    public class Saved : ICommand
-    {
-        private Commands mycommand;
-        private Canvas paintSurface;
-
-        public Saved(Commands mycommand, Canvas paintSurface)
-        {
-            this.mycommand = mycommand;
-            this.paintSurface = paintSurface;
-        }
-
-        public void Execute()
-        {
-            this.mycommand.Saving(paintSurface);
-        }
-
-        public void Undo()
-        {
-            this.paintSurface.Children.Clear();
-        }
-
-        public void Redo()
-        {
-            this.paintSurface.Children.Clear();
-        }
-    }
-
-    public class Loaded : ICommand
-    {
-        private Commands mycommand;
-        private Canvas paintSurface;
-
-        public Loaded(Commands mycommand, Canvas paintSurface)
-        {
-            this.mycommand = mycommand;
-            this.paintSurface = paintSurface;
-        }
-
-        public void Execute()
-        {
-            this.mycommand.Loading(paintSurface);
-        }
-
-        public void Undo()
-        {
-            this.paintSurface.Children.Clear();
-        }
-
-        public void Redo()
-        {
-            this.paintSurface.Children.Clear();
-        }
-    }
     */
+
+
+
 
     /*
     //class undo
