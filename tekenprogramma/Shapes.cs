@@ -60,6 +60,7 @@ namespace tekenprogramma
             this.selected = false;
         }
 
+        /*
         // Places the shape
         public void place(Canvas paintsurface, Invoker invoker)
         {
@@ -81,6 +82,7 @@ namespace tekenprogramma
                 type = "Ellipse";
             }
         }
+        */
 
         //give smallest
         public double returnSmallest(double first, double last)
@@ -95,36 +97,44 @@ namespace tekenprogramma
             }
         }
 
-        public void makeRectangle(double left, double top, Canvas paintSurface)
+        public void makeRectangle(Invoker invoker, Canvas paintSurface)
         {
             this.drawed = false;
 
             Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
-            newRectangle.Height = Math.Abs(y - top); //set height
-            newRectangle.Width = Math.Abs(x - left); //set width
+            //newRectangle.Height = Math.Abs(y - top); //set height
+            //newRectangle.Width = Math.Abs(x - left); //set width
+            newRectangle.Width = width; //set width
+            newRectangle.Height = height; //set height     
             SolidColorBrush brush = new SolidColorBrush(); //brush
             brush.Color = Windows.UI.Colors.Blue; //standard brush color is blue
             newRectangle.Fill = brush; //fill color
             newRectangle.Name = "Rectangle"; //attach name
-            Canvas.SetLeft(newRectangle, returnSmallest(left, x)); //set left position
-            Canvas.SetTop(newRectangle, returnSmallest(top, y)); //set top position 
+            //Canvas.SetLeft(newRectangle, returnSmallest(left, x)); //set left position
+            //Canvas.SetTop(newRectangle, returnSmallest(top, y)); //set top position 
+            Canvas.SetLeft(newRectangle, x); //set left position
+            Canvas.SetTop(newRectangle, y); //set top position 
             //newRectangle.PointerPressed += Drawing_pressed;
             paintSurface.Children.Add(newRectangle);
             //Rectangle.Content = paintSurface.Children[0].Opacity;
         }
 
-        public void makeEllipse(double left, double top, Canvas paintSurface)
+        public void makeEllipse(Invoker invoker, Canvas paintSurface)
         {
 
             Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
-            newEllipse.Height = Math.Abs(y - top);//set height
-            newEllipse.Width = Math.Abs(x - left);//set width
+            //newEllipse.Height = Math.Abs(y - top);//set height
+            //newEllipse.Width = Math.Abs(x - left);//set width
+            newEllipse.Width = width;
+            newEllipse.Height = height;     
             SolidColorBrush brush = new SolidColorBrush();//brush
             brush.Color = Windows.UI.Colors.Blue;//standard brush color is blue
             newEllipse.Fill = brush;//fill color
             newEllipse.Name = "Ellipse";//attach name
-            Canvas.SetLeft(newEllipse, returnSmallest(left, x));//set left position
-            Canvas.SetTop(newEllipse, returnSmallest(top, y));//set top position
+            //Canvas.SetLeft(newEllipse, returnSmallest(left, x));//set left position
+            //Canvas.SetTop(newEllipse, returnSmallest(top, y));//set top position
+            Canvas.SetLeft(newEllipse, x);//set left position
+            Canvas.SetTop(newEllipse, y);//set top position
             //newEllipse.PointerPressed += Drawing_pressed;
             paintSurface.Children.Add(newEllipse);
         }
@@ -160,6 +170,7 @@ namespace tekenprogramma
             moved = !moved;
         }
 
+        /*
         public void undoMoving(PointerRoutedEventArgs e)
         {
             this.undo();
@@ -176,8 +187,9 @@ namespace tekenprogramma
                 this.makeEllipse(left, top, paintSurface);
             }
         }
+        */
 
-        public void redoMoving(object sender, PointerRoutedEventArgs e, Canvas paintSurface)
+        public void redoMoving(PointerRoutedEventArgs e)
         {
             this.redo();
             this.moving(e);
@@ -188,6 +200,7 @@ namespace tekenprogramma
 
         }
 
+        /*
         public void undoResize(PointerRoutedEventArgs e)
         {
             this.undo();
@@ -204,6 +217,7 @@ namespace tekenprogramma
                 this.makeEllipse(left, top, paintSurface);
             }
         }
+        */
 
         public void redoResize(PointerRoutedEventArgs e)
         {
@@ -316,7 +330,7 @@ namespace tekenprogramma
         }
     }
     
-    
+    /*
     public class MakeRectangle
     {
         public MakeRectangle()
@@ -330,4 +344,5 @@ namespace tekenprogramma
         {
         }
     }
+    */
 }

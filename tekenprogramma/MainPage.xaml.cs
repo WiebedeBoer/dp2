@@ -38,11 +38,10 @@ namespace tekenprogramma
                 backuprectangle = tmp;
                 type = "Rectangle";
                 */
-                Shape shape = new Shape(cpx, cpy, e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y);
-                ICommand place = new MakeRectangles(shape);
                 //ICommand place = new PlaceRectangles(command, invoker,sender,e);
+                Shape shape = new Shape(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y,50,50);
+                ICommand place = new MakeRectangles(shape,this.invoker,paintSurface);
                 this.invoker.Execute(place);
-
 
             }
             else if(backupprep.Name == "Ellipse")
@@ -51,11 +50,15 @@ namespace tekenprogramma
                 Ellipse tmp = backupprep as Ellipse;
                 backupellipse = tmp;
                 type = "Ellipse";
-                */
+                
                 Shape shape = new Shape(cpx, cpy, e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y);
                 Commands command = null;
                 ICommand place = new PlaceEllipses(command, invoker, sender, e);
                 invoker.Execute(place);
+                */
+                Shape shape = new Shape(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y, 50, 50);
+                ICommand place = new MakeEllipses(shape, this.invoker, paintSurface);
+                this.invoker.Execute(place);
             }
             if (moving)
             {
@@ -78,26 +81,46 @@ namespace tekenprogramma
                 }
                 moving = !moving;
                 */
-                Commands command = null;
-                ICommand place = new Moving(command, invoker, sender, e);
-                invoker.Execute(place);
+                //Commands command = null;
+                //ICommand place = new Moving(command, invoker, sender, e);
+                //invoker.Execute(place);
             }
             else
             {
                 if (firstcp)
                 {
-                    cpx = e.GetCurrentPoint(paintSurface).Position.X;
-                    cpy = e.GetCurrentPoint(paintSurface).Position.Y;
+                    //cpx = e.GetCurrentPoint(paintSurface).Position.X;
+                    //cpy = e.GetCurrentPoint(paintSurface).Position.Y;
+                    if (type == "Rectangle")
+                    {
+                        //MakeRectangle(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y);
+                        Shape shape = new Shape(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y, 50, 50);
+                        ICommand place = new MakeRectangles(shape, this.invoker, paintSurface);
+                        this.invoker.Execute(place);
+                    }
+                    else
+                    {
+                        //MakeEllipse(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y);
+                        Shape shape = new Shape(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y, 50, 50);
+                        ICommand place = new MakeEllipses(shape, this.invoker, paintSurface);
+                        this.invoker.Execute(place);
+                    }
                 }
                 else
                 {
                     if (type == "Rectangle")
                     {
-                        MakeRectangle(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y);
+                        //MakeRectangle(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y);
+                        Shape shape = new Shape(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y, 50, 50);
+                        ICommand place = new MakeRectangles(shape, this.invoker, paintSurface);
+                        this.invoker.Execute(place);
                     }
                     else
                     {
-                        MakeEllipse(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y);
+                        //MakeEllipse(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y);
+                        Shape shape = new Shape(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y, 50, 50);
+                        ICommand place = new MakeEllipses(shape, this.invoker, paintSurface);
+                        this.invoker.Execute(place);
                     }
                 }
                 firstcp = !firstcp;
@@ -120,9 +143,9 @@ namespace tekenprogramma
             paintSurface.Children.Add(newRectangle);
             Rectangle.Content = paintSurface.Children[0].Opacity;
             */
-            Commands command = null;
-            ICommand place = new MakeRectangles(command,left,top,paintSurface,invoker);
-            invoker.Execute(place);
+            //Commands command = null;
+            //ICommand place = new MakeRectangles(command,left,top,paintSurface,invoker);
+            //invoker.Execute(place);
         }
 
         public void MakeEllipse(double left, double top)
@@ -140,10 +163,10 @@ namespace tekenprogramma
             newEllipse.PointerPressed += Drawing_pressed;
             paintSurface.Children.Add(newEllipse);
             */
-            Commands command = null;
+            //Commands command = null;
             //command = new Ellipse(left,top);
-            ICommand place = new MakeEllipses(command, left, top,paintSurface,invoker);
-            invoker.Execute(place);
+            //ICommand place = new MakeEllipses(command, left, top,paintSurface,invoker);
+            //invoker.Execute(place);
         }
         
         private void Move_Click(object sender, RoutedEventArgs e)
@@ -222,18 +245,18 @@ namespace tekenprogramma
         //save
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            Commands command = null;
-            ICommand place = new Saved(command, paintSurface);
-            invoker.Execute(place);
+            //Commands command = null;
+            //ICommand place = new Saved(command, paintSurface);
+            //invoker.Execute(place);
         }
 
         //load
         private void Load_Click(object sender, RoutedEventArgs e)
         {
-            paintSurface.Children.Clear();
-            Commands command = null;
-            ICommand place = new Loaded(command, paintSurface);
-            invoker.Execute(place);
+            //paintSurface.Children.Clear();
+            //Commands command = null;
+            //ICommand place = new Loaded(command, paintSurface);
+            //invoker.Execute(place);
             //return paintSurface;
         }
 
