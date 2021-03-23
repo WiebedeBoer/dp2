@@ -61,30 +61,6 @@ namespace tekenprogramma
             this.selected = false;
         }
 
-        /*
-        // Places the shape
-        public void place(Canvas paintsurface, Invoker invoker)
-        {
-            this.invoker = invoker;
-            this.paintSurface = paintSurface;
-            this.drawed = true;
-
-            FrameworkElement backupprep = e.OriginalSource as FrameworkElement;
-            if (backupprep.Name == "Rectangle")
-            {
-                Rectangle tmp = backupprep as Rectangle;
-                backuprectangle = tmp;
-                type = "Rectangle";
-            }
-            else if (backupprep.Name == "Ellipse")
-            {
-                Ellipse tmp = backupprep as Ellipse;
-                backupellipse = tmp;
-                type = "Ellipse";
-            }
-        }
-        */
-
         //give smallest
         public double returnSmallest(double first, double last)
         {
@@ -98,6 +74,7 @@ namespace tekenprogramma
             }
         }
 
+        //make rectangle
         public void makeRectangle(Invoker invoker, Canvas paintSurface)
         {
             this.drawed = false;
@@ -122,6 +99,7 @@ namespace tekenprogramma
             //Rectangle.Content = paintSurface.Children[0].Opacity;
         }
 
+        //make ellipse
         public void makeEllipse(Invoker invoker, Canvas paintSurface)
         {
             this.type = "Ellipse";
@@ -142,135 +120,44 @@ namespace tekenprogramma
             paintSurface.Children.Add(newEllipse);
         }
 
-        // Removes the shape
-        public void removeRectangle(Invoker invoker, Canvas paintSurface)
+        //undo
+        public void remove(Invoker invoker, Canvas paintSurface)
         {
-            //Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
-            //Rectangle activeRec = (Rectangle)pet.OriginalSource;
-            //Rectangle activeRec = invoker;
-            //invoker = invoker;
-            //List<Shape> removelist = invoker.shapesList;
-            List<ICommand> removelist = invoker.actionsList;
-            //removelist.RemoveAt(0);
-            //ICommand cmd = removelist.First();
-            //Rectangle activeRec
-            //paintSurface.Children.Remove(cmd);
-            //Shape cmd = removelist.First();
-            //Shape shape = cmd.shape;
-            //paintSurface = paintSurface;
-
-            //paintSurface.Children.Add(newEllipse);
-            //paintSurface.Children.Remove(activeRec);
-            //paintSurface.Children.Remove(backuprectangle);
             paintSurface.Children.Clear();
-            //this.reshape(paintSurface,removelist);
-            this.drawed = false;
-        }
-
-        public void reshape(Canvas paintSurface, List<ICommand> removeList)
-        {
-            foreach (ICommand cmd in removeList)
-            {
-                cmd.Execute();
-            }
-            
-            paintSurface.Children.Clear();
-            //List<Shape> removelist = removeList;
-            //foreach (Shape shape in removeList)
-            //{
-            //    //Shape shape = (Shape)command;
-            //    if (shape.type == "Rectangle")
-            //    {
-            //        Rectangle newShape = new Rectangle();
-            //        newShape.Width = width; //set width
-            //        newShape.Height = height; //set height  
-            //        Canvas.SetLeft(newShape, shape.x); //set left position
-            //        Canvas.SetTop(newShape, shape.y); //set top position 
-            //        paintSurface.Children.Add(newShape);
-
-            //    }
-            //    else if (shape.type == "Ellipse")
-            //    {
-            //        Rectangle newShape = new Rectangle();
-            //        newShape.Width = width; //set width
-            //        newShape.Height = height; //set height  
-            //        Canvas.SetLeft(newShape, shape.x); //set left position
-            //        Canvas.SetTop(newShape, shape.y); //set top position 
-            //        paintSurface.Children.Add(newShape);
-            //    }
-            //}
-            //return paintSurface;
-        }
-
-
-        public void removeEllipse(Invoker invoker)
-        {
-            //Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
-            //paintSurface.Children.Remove(activeEll);
-            //paintSurface.Children.Remove(backupellipse);
             this.drawed = false;
         }
 
         //moving shape
-        public void moving(PointerRoutedEventArgs e)
+        public void moving(PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface)
         {
+            
             x = e.GetCurrentPoint(paintSurface).Position.X;
             y = e.GetCurrentPoint(paintSurface).Position.Y;
-            if (type == "Rectangle")
-            {
-                Canvas.SetLeft(backuprectangle, x);
-                Canvas.SetTop(backuprectangle, y);
-                Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
-                paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
-                //paintSurface.Children.Remove(backuprectangle);
-                paintSurface.Children.Add(backuprectangle);
-            }
-            else if (type == "Ellipse")
-            {
-                Canvas.SetLeft(backupellipse, x);
-                Canvas.SetTop(backupellipse, y);
-                Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
-                paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
-                //paintSurface.Children.Remove(backupellipse);
-                paintSurface.Children.Add(backupellipse);
-            }
-            moved = !moved;
+            Canvas.SetLeft(element, x);
+            Canvas.SetTop(element, y);
+
         }
 
-        
-        public void undoMoving(PointerRoutedEventArgs e)
-        {
-            this.undo();
-            if (type == "Rectangle")
-            {
-                Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
-                paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
-                this.makeRectangle(invoker, paintSurface);
-            }
-            else if (type == "Ellipse")
-            {
-                Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
-                paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
-                this.makeEllipse(invoker, paintSurface);
-            }
-        }
-        
-
-        public void redoMoving(PointerRoutedEventArgs e)
-        {
-            this.redo();
-            this.moving(e);
-        }
-
-        public void resize(PointerRoutedEventArgs e)
+        //resize shape
+        public void resize(PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface)
         {
             //if rectangle
             if (type == "Rectangle")
             {
 
                 Rectangle selRect = new Rectangle();
-                backuprectangle.Height = Convert.ToDouble(selRect.Height); //set width
-                backuprectangle.Width = Convert.ToDouble(selRect.Width); //set height
+                //backuprectangle.Height = Convert.ToDouble(selRect.Height); //set width
+                //backuprectangle.Width = Convert.ToDouble(selRect.Width); //set height
+                double x = e.GetCurrentPoint(paintSurface).Position.X;
+                double y = e.GetCurrentPoint(paintSurface).Position.Y;
+                double Height = Convert.ToDouble(selRect.Height); //set width
+                double Width = Convert.ToDouble(selRect.Width); //set height
+                double width = x - x;
+                double height = y - y;
+                selRect.Height = height; //set width
+                selRect.Width = width; //set height
+                //backuprectangle.Height = Convert.ToDouble(selRect.Height); //set width
+                //backuprectangle.Width = Convert.ToDouble(selRect.Width); //set height
                 Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
                 paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
                 //paintSurface.Children.Remove(backuprectangle);
@@ -289,48 +176,6 @@ namespace tekenprogramma
                 //paintSurface.Children.Remove(backupellipse);
                 paintSurface.Children.Add(backupellipse);
             }
-        }
-
-        
-        public void undoResize(PointerRoutedEventArgs e)
-        {
-            this.undo();
-            if (type == "Rectangle")
-            {
-                Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
-                paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
-                this.makeRectangle(invoker, paintSurface);
-            }
-            else if (type == "Ellipse")
-            {
-                Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
-                paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
-                this.makeEllipse(invoker, paintSurface);
-            }
-        }
-        
-
-        public void redoResize(PointerRoutedEventArgs e)
-        {
-            this.redo();
-            this.resize(e);
-        }
-
-        //undo
-        public void undo()
-        {
-            int LastInList = actionsList.Count - 1;
-            ICommand lastcommand = actionsList[LastInList];
-            redoList.Add(lastcommand); //add to redo list
-            actionsList.RemoveAt(LastInList); //remove from undo list   
-        }
-        //redo
-        public void redo()
-        {
-            int LastInList = redoList.Count - 1;
-            ICommand lastcommand = redoList[LastInList]; //find last command
-            actionsList.Add(lastcommand); //add to undo list
-            redoList.RemoveAt(LastInList); //remove from redo list
         }
 
         //saving
@@ -410,17 +255,192 @@ namespace tekenprogramma
             return shape;
         }
 
-        public void selecting()
-        {
-            this.selected = true;
-        }
+        //if (element.Name == "Rectangle")
+        //{
 
-        public void deselecting()
+
+        //}
+        //else if (element.Name == "Ellipse")
+        //{
+        //    Canvas.SetLeft(element, x);
+        //    Canvas.SetTop(element, y);
+
+        //}
+
+        //Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
+        //paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
+        //paintSurface.Children.Remove(backuprectangle);
+        //paintSurface.Children.Add(backuprectangle);
+        //Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
+        //paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
+        //paintSurface.Children.Remove(backupellipse);
+        //paintSurface.Children.Add(backupellipse);
+
+        /*
+        public void undoMoving(PointerRoutedEventArgs e)
         {
-            this.selected = false;
+            this.undo();
+            if (type == "Rectangle")
+            {
+                Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
+                paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
+                this.makeRectangle(invoker, paintSurface);
+            }
+            else if (type == "Ellipse")
+            {
+                Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
+                paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
+                this.makeEllipse(invoker, paintSurface);
+            }
+        }        
+
+        public void redoMoving(PointerRoutedEventArgs e)
+        {
+            this.redo();
+            this.moving(e);
         }
+        */
+
+        ////undo
+        //public void undo()
+        //{
+        //    int LastInList = actionsList.Count - 1;
+        //    ICommand lastcommand = actionsList[LastInList];
+        //    redoList.Add(lastcommand); //add to redo list
+        //    actionsList.RemoveAt(LastInList); //remove from undo list   
+        //}
+        ////redo
+        //public void redo()
+        //{
+        //    int LastInList = redoList.Count - 1;
+        //    ICommand lastcommand = redoList[LastInList]; //find last command
+        //    actionsList.Add(lastcommand); //add to undo list
+        //    redoList.RemoveAt(LastInList); //remove from redo list
+        //}
+
+        /*
+        public void undoResize(PointerRoutedEventArgs e)
+        {
+            this.undo();
+            if (type == "Rectangle")
+            {
+                Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
+                paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
+                this.makeRectangle(invoker, paintSurface);
+            }
+            else if (type == "Ellipse")
+            {
+                Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
+                paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
+                this.makeEllipse(invoker, paintSurface);
+            }
+        }
+        
+
+        public void redoResize(PointerRoutedEventArgs e)
+        {
+            this.redo();
+            this.resize(e);
+        }
+        */
+
+        /*
+        // Places the shape
+        public void place(Canvas paintsurface, Invoker invoker)
+        {
+            this.invoker = invoker;
+            this.paintSurface = paintSurface;
+            this.drawed = true;
+
+            FrameworkElement backupprep = e.OriginalSource as FrameworkElement;
+            if (backupprep.Name == "Rectangle")
+            {
+                Rectangle tmp = backupprep as Rectangle;
+                backuprectangle = tmp;
+                type = "Rectangle";
+            }
+            else if (backupprep.Name == "Ellipse")
+            {
+                Ellipse tmp = backupprep as Ellipse;
+                backupellipse = tmp;
+                type = "Ellipse";
+            }
+        }
+        */
+
+        // Removes the shape
+        //public void removeRectangle(Invoker invoker, Canvas paintSurface)
+        //{
+        //    //Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
+        //    //Rectangle activeRec = (Rectangle)pet.OriginalSource;
+        //    //Rectangle activeRec = invoker;
+        //    //invoker = invoker;
+        //    //List<Shape> removelist = invoker.shapesList;
+        //    List<ICommand> removelist = invoker.actionsList;
+        //    //removelist.RemoveAt(0);
+        //    //ICommand cmd = removelist.First();
+        //    //Rectangle activeRec
+        //    //paintSurface.Children.Remove(cmd);
+        //    //Shape cmd = removelist.First();
+        //    //Shape shape = cmd.shape;
+        //    //paintSurface = paintSurface;
+
+        //    //paintSurface.Children.Add(newEllipse);
+        //    //paintSurface.Children.Remove(activeRec);
+        //    //paintSurface.Children.Remove(backuprectangle);
+        //    paintSurface.Children.Clear();
+        //    //this.reshape(paintSurface,removelist);
+        //    this.drawed = false;
+        //}
+
+        //public void reshape(Canvas paintSurface, List<ICommand> removeList)
+        //{
+        //    foreach (ICommand cmd in removeList)
+        //    {
+        //        cmd.Execute();
+        //    }
+
+        //    paintSurface.Children.Clear();
+        //    //List<Shape> removelist = removeList;
+        //    //foreach (Shape shape in removeList)
+        //    //{
+        //    //    //Shape shape = (Shape)command;
+        //    //    if (shape.type == "Rectangle")
+        //    //    {
+        //    //        Rectangle newShape = new Rectangle();
+        //    //        newShape.Width = width; //set width
+        //    //        newShape.Height = height; //set height  
+        //    //        Canvas.SetLeft(newShape, shape.x); //set left position
+        //    //        Canvas.SetTop(newShape, shape.y); //set top position 
+        //    //        paintSurface.Children.Add(newShape);
+
+        //    //    }
+        //    //    else if (shape.type == "Ellipse")
+        //    //    {
+        //    //        Rectangle newShape = new Rectangle();
+        //    //        newShape.Width = width; //set width
+        //    //        newShape.Height = height; //set height  
+        //    //        Canvas.SetLeft(newShape, shape.x); //set left position
+        //    //        Canvas.SetTop(newShape, shape.y); //set top position 
+        //    //        paintSurface.Children.Add(newShape);
+        //    //    }
+        //    //}
+        //    //return paintSurface;
+        //}
+
+
+        //public void removeEllipse(Invoker invoker, Canvas paintSurface)
+        //{
+        //    //Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
+        //    //paintSurface.Children.Remove(activeEll);
+        //    //paintSurface.Children.Remove(backupellipse);
+        //    paintSurface.Children.Clear();
+        //    this.drawed = false;
+        //}
+
+
     }
-    
+
     /*
     public class MakeRectangle
     {
