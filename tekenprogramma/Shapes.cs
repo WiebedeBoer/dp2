@@ -66,11 +66,11 @@ namespace tekenprogramma
         {
             if (first < last)
             {
-                return first;
+                return last - first;
             }
             else
             {
-                return last;
+                return first - last;
             }
         }
 
@@ -80,23 +80,15 @@ namespace tekenprogramma
             this.drawed = false;
             this.type = "Rectangle";
             Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
-            //newRectangle.Height = Math.Abs(y - top); //set height
-            //newRectangle.Width = Math.Abs(x - left); //set width
             newRectangle.Width = width; //set width
             newRectangle.Height = height; //set height     
             SolidColorBrush brush = new SolidColorBrush(); //brush
             brush.Color = Windows.UI.Colors.Blue; //standard brush color is blue
             newRectangle.Fill = brush; //fill color
             newRectangle.Name = "Rectangle"; //attach name
-            //Canvas.SetLeft(newRectangle, returnSmallest(left, x)); //set left position
-            //Canvas.SetTop(newRectangle, returnSmallest(top, y)); //set top position 
             Canvas.SetLeft(newRectangle, x); //set left position
             Canvas.SetTop(newRectangle, y); //set top position 
-            //newRectangle.PointerPressed += Drawing_pressed;
             paintSurface.Children.Add(newRectangle);
-            Shape shape = new Shape(this.x, this.y, this.width, this.height);
-            //invoker.shapesList.Add(shape);
-            //Rectangle.Content = paintSurface.Children[0].Opacity;
         }
 
         //make ellipse
@@ -104,19 +96,14 @@ namespace tekenprogramma
         {
             this.type = "Ellipse";
             Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
-            //newEllipse.Height = Math.Abs(y - top);//set height
-            //newEllipse.Width = Math.Abs(x - left);//set width
             newEllipse.Width = width;
             newEllipse.Height = height;     
             SolidColorBrush brush = new SolidColorBrush();//brush
             brush.Color = Windows.UI.Colors.Blue;//standard brush color is blue
             newEllipse.Fill = brush;//fill color
             newEllipse.Name = "Ellipse";//attach name
-            //Canvas.SetLeft(newEllipse, returnSmallest(left, x));//set left position
-            //Canvas.SetTop(newEllipse, returnSmallest(top, y));//set top position
             Canvas.SetLeft(newEllipse, x);//set left position
             Canvas.SetTop(newEllipse, y);//set top position
-            //newEllipse.PointerPressed += Drawing_pressed;
             paintSurface.Children.Add(newEllipse);
         }
 
@@ -129,53 +116,24 @@ namespace tekenprogramma
 
         //moving shape
         public void moving(PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface)
-        {
-            
+        { 
             x = e.GetCurrentPoint(paintSurface).Position.X;
             y = e.GetCurrentPoint(paintSurface).Position.Y;
             Canvas.SetLeft(element, x);
             Canvas.SetTop(element, y);
-
         }
 
         //resize shape
         public void resize(PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface)
         {
-            //if rectangle
-            if (type == "Rectangle")
-            {
-
-                Rectangle selRect = new Rectangle();
-                //backuprectangle.Height = Convert.ToDouble(selRect.Height); //set width
-                //backuprectangle.Width = Convert.ToDouble(selRect.Width); //set height
-                double x = e.GetCurrentPoint(paintSurface).Position.X;
-                double y = e.GetCurrentPoint(paintSurface).Position.Y;
-                double Height = Convert.ToDouble(selRect.Height); //set width
-                double Width = Convert.ToDouble(selRect.Width); //set height
-                double width = x - x;
-                double height = y - y;
-                selRect.Height = height; //set width
-                selRect.Width = width; //set height
-                //backuprectangle.Height = Convert.ToDouble(selRect.Height); //set width
-                //backuprectangle.Width = Convert.ToDouble(selRect.Width); //set height
-                Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
-                paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
-                //paintSurface.Children.Remove(backuprectangle);
-                paintSurface.Children.Add(backuprectangle);
-
-            }
-            //else if ellipse
-            else if (type == "Ellipse")
-            {
-
-                Ellipse selEllipse = new Ellipse();
-                backupellipse.Height = Convert.ToDouble(selEllipse.Height); //set width
-                backupellipse.Width = Convert.ToDouble(selEllipse.Width); //set height
-                Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
-                paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
-                //paintSurface.Children.Remove(backupellipse);
-                paintSurface.Children.Add(backupellipse);
-            }
+            double ex = e.GetCurrentPoint(paintSurface).Position.X;
+            double ey = e.GetCurrentPoint(paintSurface).Position.Y;
+            double lw = Convert.ToDouble(element.ActualOffset.X); //set width
+            double lh = Convert.ToDouble(element.ActualOffset.Y); //set height
+            double w = returnSmallest(ex,lw);
+            double h = returnSmallest(ey,lh);
+            element.Width = w;
+            element.Height = h;
         }
 
         //saving
@@ -254,6 +212,48 @@ namespace tekenprogramma
 
             return shape;
         }
+
+
+
+        //newEllipse.Height = Math.Abs(y - top);//set height
+        //newEllipse.Width = Math.Abs(x - left);//set width
+        //Canvas.SetLeft(newEllipse, returnSmallest(left, x));//set left position
+        //Canvas.SetTop(newEllipse, returnSmallest(top, y));//set top position
+        //newEllipse.PointerPressed += Drawing_pressed;
+        //invoker.shapesList.Add(shape);
+        //Rectangle.Content = paintSurface.Children[0].Opacity;
+
+        //Shape shape = new Shape(this.x, this.y, this.width, this.height);
+
+        ////if rectangle
+        //if (type == "Rectangle")
+        //{
+
+        //    //Rectangle selRect = new Rectangle();
+        //    //backuprectangle.Height = Convert.ToDouble(selRect.Height); //set width
+        //    //backuprectangle.Width = Convert.ToDouble(selRect.Width); //set height
+
+
+        //    //backuprectangle.Height = Convert.ToDouble(selRect.Height); //set width
+        //    //backuprectangle.Width = Convert.ToDouble(selRect.Width); //set height
+        //    Rectangle activeRec = (Rectangle)e.OriginalSource; // create the link between the sender rectangle
+        //    paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
+        //    //paintSurface.Children.Remove(backuprectangle);
+        //    paintSurface.Children.Add(backuprectangle);
+
+        //}
+        ////else if ellipse
+        //else if (type == "Ellipse")
+        //{
+
+        //    Ellipse selEllipse = new Ellipse();
+        //    backupellipse.Height = Convert.ToDouble(selEllipse.Height); //set width
+        //    backupellipse.Width = Convert.ToDouble(selEllipse.Width); //set height
+        //    Ellipse activeEll = (Ellipse)e.OriginalSource; // create the link between the sender ellipse
+        //    paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
+        //    //paintSurface.Children.Remove(backupellipse);
+        //    paintSurface.Children.Add(backupellipse);
+        //}
 
         //if (element.Name == "Rectangle")
         //{
