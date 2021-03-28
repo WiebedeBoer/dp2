@@ -26,6 +26,9 @@ namespace tekenprogramma
         private List<ICommand> actionsList = new List<ICommand>();
         private List<ICommand> redoList = new List<ICommand>();
 
+        private List<FrameworkElement> undoList = new List<FrameworkElement>();
+        private List<FrameworkElement> reList = new List<FrameworkElement>();
+
         public Invoker invoker;
         public Canvas paintSurface;
         public PointerRoutedEventArgs pet;
@@ -121,6 +124,27 @@ namespace tekenprogramma
             y = e.GetCurrentPoint(paintSurface).Position.Y;
             Canvas.SetLeft(element, x);
             Canvas.SetTop(element, y);
+            this.undoList.Add(element);
+        }
+
+        public void undoMoving(Canvas paintSurface)
+        {
+            FrameworkElement element = this.undoList.Last();
+            x = element.ActualOffset.X;
+            y = element.ActualOffset.Y;
+            Canvas.SetLeft(element, x);
+            Canvas.SetTop(element, y);
+            this.reList.Add(element);
+        }
+
+        public void redoMoving(Canvas paintSurface)
+        {
+            FrameworkElement element = this.reList.Last();
+            x = element.ActualOffset.X;
+            y = element.ActualOffset.Y;
+            Canvas.SetLeft(element, x);
+            Canvas.SetTop(element, y);
+            this.undoList.Add(element);
         }
 
         //resize shape
@@ -134,6 +158,16 @@ namespace tekenprogramma
             double h = returnSmallest(ey,lh);
             element.Width = w;
             element.Height = h;
+        }
+
+        public void undoResize(Canvas paintSurface)
+        {
+
+        }
+
+        public void redoResize(Canvas paintSurface)
+        {
+
         }
 
         //saving

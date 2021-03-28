@@ -206,7 +206,7 @@ namespace tekenprogramma
         {
             FrameworkElement button = e.OriginalSource as FrameworkElement;
             type = button.Name;
-            Shape command = null;
+            Shape command = new Shape(0, 0, 0, 0);
             ICommand place = new Saved(command, paintSurface);
             invoker.Execute(place);
         }
@@ -216,8 +216,9 @@ namespace tekenprogramma
         {
             FrameworkElement button = e.OriginalSource as FrameworkElement;
             type = button.Name;
-            
-            Shape command = null;
+
+            //Shape command = null;
+            Shape command = new Shape(0, 0, 0, 0);
             ICommand place = new Loaded(command, paintSurface);
             invoker.Execute(place);            
         }

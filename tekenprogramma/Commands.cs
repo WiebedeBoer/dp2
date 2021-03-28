@@ -153,12 +153,12 @@ namespace tekenprogramma
 
         public void Undo()
         {
-            this.shape.remove(this.invoker, this.paintSurface);
+            this.shape.undoMoving(this.paintSurface);
         }
 
         public void Redo()
         {
-            this.shape.moving(this.e,this.element,this.paintSurface);
+            this.shape.redoMoving(this.paintSurface);
         }
     }
 
