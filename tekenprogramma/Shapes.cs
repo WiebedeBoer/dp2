@@ -37,6 +37,7 @@ namespace tekenprogramma
         Ellipse backupellipse; //ellipse shape
         string type = "Rectangle"; //default shape
         bool moved = false; //moving
+        private FrameworkElement backelement;
 
         //file IO
         private List<String> lines = new List<String>();
@@ -158,16 +159,31 @@ namespace tekenprogramma
             double h = returnSmallest(ey,lh);
             element.Width = w;
             element.Height = h;
+            this.undoList.Add(element);
         }
 
         public void undoResize(Canvas paintSurface)
         {
-
+            FrameworkElement prevelement = this.undoList.Last();
+            backelement.Width = prevelement.Width;
+            backelement.Height = prevelement.Height;
+            x = prevelement.ActualOffset.X;
+            y = prevelement.ActualOffset.Y;
+            Canvas.SetLeft(prevelement, x);
+            Canvas.SetTop(prevelement, y);
+            this.reList.Add(backelement);
         }
 
         public void redoResize(Canvas paintSurface)
         {
-
+            FrameworkElement prevelement = this.reList.Last();
+            backelement.Width = prevelement.Width;
+            backelement.Height = prevelement.Height;
+            x = prevelement.ActualOffset.X;
+            y = prevelement.ActualOffset.Y;
+            Canvas.SetLeft(prevelement, x);
+            Canvas.SetTop(prevelement, y);
+            this.undoList.Add(backelement);
         }
 
         //saving
