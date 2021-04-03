@@ -32,6 +32,17 @@
 
         </Canvas>
 
+        <!--<Button Height = "23" 
+         Margin = "100" 
+         Name = "ShowMessageBox" 
+         VerticalAlignment = "Top" 
+         Click = "ShowMessageBox_Click">Confirm</Button>-->
+        <!--<TextBox Height = "23" 
+         HorizontalAlignment = "Left" 
+         Margin = "181,167,0,0" 
+         Name = "textBox1" 
+         VerticalAlignment = "Top" 
+         Width = "120" />-->
     </Grid>   
 
 </Page>

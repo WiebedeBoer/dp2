@@ -7,6 +7,9 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI.Input;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+//using System.Windows.Controls;
+using System.IO;
 
 namespace tekenprogramma
 {
@@ -201,14 +204,88 @@ namespace tekenprogramma
             invoker.Redo();
         }
 
+        //private void ShowMessageBox_Click(object sender, RoutedEventArgs e)
+        //{
+        //    string msgtext = "Click any button";
+        //    string txt = "My Title";
+        //    MessageBoxButton button = MessageBoxButton.YesNoCancel;
+        //    MessageBoxResult result = MessageBox.Show(msgtext, txt, button);
+
+        //    switch (result)
+        //    {
+        //        case MessageBoxResult.Yes:
+        //            textBox1.Text = "Yes";
+        //            break;
+        //        case MessageBoxResult.No:
+        //            textBox1.Text = "No";
+        //            break;
+        //        case MessageBoxResult.Cancel:
+        //            textBox1.Text = "Cancel";
+        //            break;
+        //    }
+        //}
+
         //save click
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            FrameworkElement button = e.OriginalSource as FrameworkElement;
-            type = button.Name;
-            Shape command = new Shape(0, 0, 0, 0);
-            ICommand place = new Saved(command, paintSurface);
-            invoker.Execute(place);
+            //SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            //saveFileDialog1.Filter = "*.text|*.txt";
+            //saveFileDialog1.Title = "Save an Text File";
+            //saveFileDialog1.ShowDialog();
+
+            //MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Are you sure?", "Delete Confirmation", System.Windows.MessageBoxButton.YesNo);
+            //MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Saved", "Confirmation", System.Windows.MessageBoxButton.OK);
+            //MessageBox.Show("Saved", "Confirmation", System.Windows.MessageBoxButton.OK);
+            //string savpath = Environment.CurrentDirectory + "/memory.sav";
+
+            //if (File.Exists(savpath))
+            //{
+                //File.Delete("memory.sav");
+                //MessageBox.Show("ja opgeslagen");
+
+                string msgtext = "Click any button";
+                string txt = "Saving";
+                //MessageBoxButton button = MessageBoxButton.YesNoCancel;
+                FrameworkElement button = e.OriginalSource as FrameworkElement;
+                //MessageBoxButton button = e.OriginalSource as MessageBoxButton;
+                //MessageBoxResult result = MessageBox.Show(msgtext, txt, button);
+
+                //switch (result)
+                //{
+                //    case MessageBoxResult.Yes:
+                //        textBox1.Text = "Yes";
+                //        break;
+                //    case MessageBoxResult.No:
+                //        textBox1.Text = "No";
+                //        break;
+                //    case MessageBoxResult.Cancel:
+                //        textBox1.Text = "Cancel";
+                //        break;
+                //}
+
+                //if (MessageBox.Show("Do you want to Save?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                //{
+                
+                    type = button.Name;
+                    Shape command = new Shape(0, 0, 0, 0);
+                    ICommand place = new Saved(command, paintSurface);
+                    invoker.Execute(place);
+            //}
+
+
+            //}
+
+            //WriteCharacters();
+        }
+
+
+        static async void WriteCharacters()
+        {
+            using (StreamWriter writer = File.CreateText("newfile.txt"))
+            {
+                await writer.WriteLineAsync("First line of example");
+                await writer.WriteLineAsync("and second line");
+            }
         }
 
         //load click

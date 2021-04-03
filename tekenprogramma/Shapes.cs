@@ -10,10 +10,25 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Windows;
+using Windows.Storage;
+using Windows.ApplicationModel.Activation;
 
 namespace tekenprogramma
 {
-    
+
+    //public class Saver
+    //{
+    //    public static void SaveData(object obj, string filename)
+    //    {
+    //        //XmlSerializer sr = new XmlSerializer(obj.GetType());
+    //        StreamWriter sw = new StreamWriter(filename);
+    //        TextWriter writer = new StreamWriter(filename);
+    //        //sr.Serialize(writer, obj);
+    //        writer.Close();
+    //    }
+    //}
+
     public class Shape
     {
         private double x;
@@ -39,11 +54,32 @@ namespace tekenprogramma
         bool moved = false; //moving
         private FrameworkElement backelement;
 
+
         //file IO
         private List<String> lines = new List<String>();
-        //string path = @"c:\temp\MyTest.txt";
 
-        string path = Directory.GetCurrentDirectory();
+        //Task<int> task = WriteFile(Canvas paintSurface);
+
+        public string FileText { get; set; }
+        string path = @"c:\temp\save.txt";
+        //string path = @"C:\Users\wiebe\Documents\patterns\dp2";
+
+        //string path = Directory.GetCurrentDirectory();
+        //string path = Directory.GetCurrentDirectory() + "\\save.txt";
+        //string path = @"C:\Users\wiebe\Documents\patterns\dp2\tekenprogramma\bin\x86\Debug\AppX\save.txt";
+        //string path = @"C:\Users\wiebe\Documents\patterns\dp2\tekenprogramma\bin\x86\Debug\AppX\save.txt";
+        //string path = @"C:\Users\wiebe\source\repos\save.txt";
+        //string path = Environment.CurrentDirectory + "/save.txt";
+        //string path = Environment.CurrentDirectory + @"\save.txt";
+        //string path = System.AppDomain.CurrentDomain.BaseDirectory + "save.txt";
+        //string myfile = "save.txt";
+        //string mypath = path;
+        //string path = @"C:\Users\wiebe\Documents\patterns\dp2\tekenprogramma\save.txt";
+        //string mypath = @"C:\Users\wiebe\Documents\patterns\dp2\save.txt";
+        //string path = @"C:\Users\wiebe\Documents\patterns\dp2\save.txt";
+        //path = path.Replace(@"\\", @"\");
+        //path = path.Replace("\\\","\\");
+        //string path = Environment.CurrentDirectory + @"\save.txt";
 
         public Shape(double x, double y, double width, double height)
         {
@@ -187,10 +223,18 @@ namespace tekenprogramma
         }
 
         //saving
-        public void saving(Canvas paintSurface)
+        public async void saving(Canvas paintSurface)
         {
-            if (!File.Exists(path))
+            //this.CreateFile();
+            //this.WriteFile(paintSurface);
+
+            //Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            //Windows.Storage.StorageFile sampleFile = await storageFolder.CreateFileAsync("dp2data.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+
+            try
             {
+                string lines ="";
+
                 foreach (FrameworkElement child in paintSurface.Children)
                 {
                     if (child is Rectangle)
@@ -198,21 +242,240 @@ namespace tekenprogramma
                         double top = (double)child.GetValue(Canvas.TopProperty);
                         double left = (double)child.GetValue(Canvas.LeftProperty);
                         string str = "rectangle " + left + " " + top + " " + child.Width + " " + child.Height + "\n";
-                        //string str = "rectangle " + child.Width + " " + child.Height + "\n";
-                        lines.Add(str);
+                        lines += str;
                     }
                     else
                     {
                         double top = (double)child.GetValue(Canvas.TopProperty);
                         double left = (double)child.GetValue(Canvas.LeftProperty);
                         string str = "ellipse " + left + " " + top + " " + child.Width + " " + child.Height + "\n";
-                        //string str = "ellipse " + child.Width + " " + child.Height + "\n";
-                        lines.Add(str);
+                        lines += str;
                     }
                 }
-                // Create a file to write to.
-                File.WriteAllLines(path, lines);
+
+
+                Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+                Windows.Storage.StorageFile sampleFile = await storageFolder.CreateFileAsync("dp2data.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
+                //Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("dp2data.txt");
+                await Windows.Storage.FileIO.WriteTextAsync(sampleFile, lines);
             }
+            catch (System.IO.FileNotFoundException)
+            {
+                FileText = "File not found.";
+            }
+            catch (System.IO.FileLoadException)
+            {
+                FileText = "File Failed to load";
+            }
+            catch (System.IO.IOException e)
+            {
+                FileText = "File IO error " + e;
+            }
+            catch (Exception err)
+            {
+                FileText = err.Message;
+            }
+
+
+            //try
+            //{
+
+            //    //StreamWriter sw = new StreamWriter(path);
+            //    Windows.Storage.StorageFolder installedLocation = Windows.ApplicationModel.Package.Current.InstalledLocation;
+            //    StorageFolder localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            //    StorageFolder storageFolder = ApplicationData.Current.RoamingFolder;
+            //    //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///file.txt"));
+            //    //string newpath = installedLocation + @"\save.txt";
+            //    //string newpath = localFolder + @"\save.txt";
+            //    string textfile = @"\save.txt";
+            //    string newpath = installedLocation + textfile;
+
+            //    if (!File.Exists(newpath))
+            //        File.Create(newpath);
+
+            //    StreamWriter sw = new StreamWriter(newpath);
+            //    foreach (FrameworkElement child in paintSurface.Children)
+            //    {
+            //        if (child is Rectangle)
+            //        {
+            //            double top = (double)child.GetValue(Canvas.TopProperty);
+            //            double left = (double)child.GetValue(Canvas.LeftProperty);
+            //            string str = "rectangle " + left + " " + top + " " + child.Width + " " + child.Height + "\n";
+            //            //string str = "rectangle " + child.Width + " " + child.Height + "\n";
+            //            lines.Add(str);
+            //            sw.WriteLine(str);
+            //        }
+            //        else
+            //        {
+            //            double top = (double)child.GetValue(Canvas.TopProperty);
+            //            double left = (double)child.GetValue(Canvas.LeftProperty);
+            //            string str = "ellipse " + left + " " + top + " " + child.Width + " " + child.Height + "\n";
+            //            //string str = "ellipse " + child.Width + " " + child.Height + "\n";
+            //            lines.Add(str);
+            //            sw.WriteLine(str);
+            //        }
+            //    }
+            //}
+            //catch (System.IO.FileNotFoundException)
+            //{
+            //    FileText = "File not found.";
+            //}
+            //catch (System.IO.FileLoadException)
+            //{
+            //    FileText = "File Failed to load";
+            //}
+            //catch (System.IO.IOException e)
+            //{
+            //    FileText = "File IO error " + e;
+            //}
+            //catch (Exception err)
+            //{
+            //    FileText = err.Message;
+            //}
+
+
+
+
+            //string file = "save.txt";
+            //string file = @"c:\temp\save.txt";
+            //string file = @"C:\Users\wiebe\source\repos\save.txt";
+            //string path = Environment.CurrentDirectory + @"\save.txt";
+
+            //SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            //saveFileDialog1.Filter = "*.text|*.txt";
+            //saveFileDialog1.Title = "Save an Text File";
+            //saveFileDialog1.ShowDialog();
+
+            //if (!File.Exists(path))
+            //{
+            //MessageBox.Show("ja opgeslagen");
+
+            //}
+
+            //File.SetAttributes(file, FileAttributes.Normal);
+
+            //StreamWriter sw = File.CreateText("newfile.txt");
+            //StreamWriter sw = File.CreateText(file);
+            //FileAccess.ReadWrite(file,FileAccess.ReadWrite);
+
+
+            //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///file.txt"));
+
+            //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync
+
+            //WriteFile(paintSurface);
+
+
+            //sw.Close();
+            // Create a file to write to.
+            //File.WriteAllLines(file, lines);
+            //System.IO.File.WriteAllBytes(@"c:\Temp\temp.txt", lines);
+            //System.IO.File.WriteAllLines(@"c:\temp\save.txt", lines);
+            //System.IO.File.WriteAllLines(@"C:\Users\wiebe\Documents\patterns\dp2\save.txt", lines);
+            //}
+            //lines = lines;
+        }
+
+        public async void CreateFile()
+        {
+            Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            Windows.Storage.StorageFile sampleFile = await storageFolder.CreateFileAsync("dp2data.txt",Windows.Storage.CreationCollisionOption.ReplaceExisting);
+        }
+
+        public async void WriteFile(Canvas paintSurface)
+        {
+            //List<String> lines = new List<String>();
+
+            try
+            {
+                string lines = "test";
+                Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+                Windows.Storage.StorageFile sampleFile = await storageFolder.GetFileAsync("dp2data.txt");
+                await Windows.Storage.FileIO.WriteTextAsync(sampleFile, lines);
+            }           
+
+            catch (System.IO.FileNotFoundException)
+            {
+                FileText = "File not found.";
+            }
+            catch (System.IO.FileLoadException)
+            {
+                FileText = "File Failed to load";
+            }
+            catch (System.IO.IOException e)
+            {
+                FileText = "File IO error " + e;
+            }
+            catch (Exception err)
+            {
+                FileText = err.Message;
+            }
+
+            //var stream = await sampleFile.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
+
+        }
+
+        //public static async Task Task<int> WriteFile(){
+        //    List<String> lines = new List<String>();
+        //    string FileText;
+        //    try
+        //    {
+        //        //StreamWriter sw = new StreamWriter(path);
+        //        Windows.Storage.StorageFolder installedLocation = Windows.ApplicationModel.Package.Current.InstalledLocation;
+        //        StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///file.txt"));
+
+        //        using (StreamReader reader = new StreamReader(file)
+        //        {
+
+        //        }
+
+        //        StreamWriter sw = new StreamWriter(file);
+        //        foreach (FrameworkElement child in paintSurface.Children)
+        //        {
+        //            if (child is Rectangle)
+        //            {
+        //                double top = (double)child.GetValue(Canvas.TopProperty);
+        //                double left = (double)child.GetValue(Canvas.LeftProperty);
+        //                string str = "rectangle " + left + " " + top + " " + child.Width + " " + child.Height + "\n";
+        //                //string str = "rectangle " + child.Width + " " + child.Height + "\n";
+        //                lines.Add(str);
+        //                sw.WriteLine(str);
+        //            }
+        //            else
+        //            {
+        //                double top = (double)child.GetValue(Canvas.TopProperty);
+        //                double left = (double)child.GetValue(Canvas.LeftProperty);
+        //                string str = "ellipse " + left + " " + top + " " + child.Width + " " + child.Height + "\n";
+        //                //string str = "ellipse " + child.Width + " " + child.Height + "\n";
+        //                lines.Add(str);
+        //                sw.WriteLine(str);
+        //            }
+        //        }
+        //    }
+        //    catch (System.IO.FileNotFoundException)
+        //    {
+        //        FileText = "File not found.";
+        //    }
+        //    catch (System.IO.FileLoadException)
+        //    {
+        //        FileText = "File Failed to load";
+        //    }
+        //    catch (System.IO.IOException)
+        //    {
+        //        FileText = "File I/O Error";
+        //    }
+        //    catch (Exception err)
+        //    {
+        //        FileText = err.Message;
+        //    }
+        //}
+
+        //protected override void OnFileActivated(FileActivatedEventArgs args)
+        protected void OnFileActivated(FileActivatedEventArgs args)
+        {
+            // TODO: Handle file activation
+            // The number of files received is args.Files.Size
+            // The name of the first file is args.Files[0].Name
         }
 
         //loading
