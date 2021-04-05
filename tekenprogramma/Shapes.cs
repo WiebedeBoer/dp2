@@ -16,13 +16,21 @@ using Windows.ApplicationModel.Activation;
 
 namespace tekenprogramma
 {
+    public class Location
+    {
+        public double x;
+        public double y;
+        public double width;
+        public double height;
+    }
+
 
     public class Shape
     {
-        private double x;
-        private double y;
-        private double width;
-        private double height;
+        public double x;
+        public double y;
+        public double width;
+        public double height;
         private bool selected;
         private bool drawed;
 
@@ -32,15 +40,18 @@ namespace tekenprogramma
         private List<FrameworkElement> undoList = new List<FrameworkElement>();
         private List<FrameworkElement> reList = new List<FrameworkElement>();
 
+        private List<Location> undoLocList = new List<Location>();
+        private List<Location> redoLocList = new List<Location>();
+
         public Invoker invoker;
         public Canvas paintSurface;
         public PointerRoutedEventArgs pet;
 
-        //Rectangle backuprectangle; //rectangle shape
-        //Ellipse backupellipse; //ellipse shape
+        public Rectangle backuprectangle; //rectangle shape
+        public Ellipse backupellipse; //ellipse shape
         string type = "Rectangle"; //default shape type
         //bool moved = false; //moving
-        private FrameworkElement backelement; //backup element
+        public FrameworkElement backelement; //backup element
 
         //file IO
         public string FileText { get; set; }
@@ -94,6 +105,9 @@ namespace tekenprogramma
             Canvas.SetLeft(newRectangle, x); //set left position
             Canvas.SetTop(newRectangle, y); //set top position 
             paintSurface.Children.Add(newRectangle);
+            this.drawed = true;
+            this.backuprectangle = newRectangle;
+            //backelement.Name = "Rectangle";
         }
 
         //make ellipse
@@ -110,48 +124,296 @@ namespace tekenprogramma
             Canvas.SetLeft(newEllipse, x);//set left position
             Canvas.SetTop(newEllipse, y);//set top position
             paintSurface.Children.Add(newEllipse);
+            this.drawed = true;
+            this.backupellipse = newEllipse;
+            //this.backelement.Name = "Ellipse";
         }
 
         //undo create
         public void remove(Invoker invoker, Canvas paintSurface)
         {
-            paintSurface.Children.Clear();
+
             this.drawed = false;
+
+            if (this.type == "Rectangle")
+            {
+                // if the click source is a rectangle then we will create a new rectangle
+                // and link it to the rectangle that sent the click event
+                Rectangle activeRec = (Rectangle)backuprectangle; // create the link between the sender rectangle
+                paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
+            }
+            else if (this.type == "Ellipse")
+            {
+                // if the click source is a rectangle then we will create a new ellipse
+                // and link it to the rectangle that sent the click event
+                Ellipse activeEll = (Ellipse)backupellipse; // create the link between the sender ellipse
+                paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
+            }
+
         }
 
         //moving shape
-        public void moving(PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface)
-        { 
+        public void moving(Invoker invoker, PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface, Location location)
+        {
+
+
+            //if (element.Name =="Rectangle")
+            //{
+            //    // if the click source is a rectangle then we will create a new rectangle
+            //    // and link it to the rectangle that sent the click event
+            //    Rectangle activeRec = (Rectangle)element; // create the link between the sender rectangle
+            //    paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
+
+            //    Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
+            //    newRectangle.Width = location.width; //set width
+            //    newRectangle.Height = location.height; //set height     
+            //    SolidColorBrush brush = new SolidColorBrush(); //brush
+            //    brush.Color = Windows.UI.Colors.Blue; //standard brush color is blue
+            //    newRectangle.Fill = brush; //fill color
+            //    newRectangle.Name = "Rectangle"; //attach name
+            //    //Canvas.SetLeft(newRectangle, e.GetCurrentPoint(paintSurface).Position.X); //set left position
+            //    //Canvas.SetTop(newRectangle, e.GetCurrentPoint(paintSurface).Position.Y); //set top position 
+            //    Canvas.SetLeft(newRectangle, location.x);
+            //    Canvas.SetTop(newRectangle, location.y);
+            //    paintSurface.Children.Add(newRectangle);
+            //    this.backuprectangle = newRectangle;
+
+            //    this.undoList.Add(newRectangle);
+
+            //}
+            //else if (element.Name =="Ellipse")
+            //{
+            //    // if the click source is a rectangle then we will create a new ellipse
+            //    // and link it to the rectangle that sent the click event
+            //    Ellipse activeEll = (Ellipse)element; // create the link between the sender ellipse
+            //    paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
+
+            //    Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
+            //    newEllipse.Width = location.width;
+            //    newEllipse.Height = location.height;
+            //    SolidColorBrush brush = new SolidColorBrush();//brush
+            //    brush.Color = Windows.UI.Colors.Blue;//standard brush color is blue
+            //    newEllipse.Fill = brush;//fill color
+            //    newEllipse.Name = "Ellipse";//attach name
+            //    //Canvas.SetLeft(newEllipse, e.GetCurrentPoint(paintSurface).Position.X);//set left position
+            //    //Canvas.SetTop(newEllipse, e.GetCurrentPoint(paintSurface).Position.Y);//set top position
+            //    Canvas.SetLeft(newEllipse, location.x);//set left position
+            //    Canvas.SetTop(newEllipse, location.y);//set top position
+            //    paintSurface.Children.Add(newEllipse);
+            //    this.backupellipse = newEllipse;
+
+            //    this.undoList.Add(newEllipse);
+            //}
+
+            //Canvas.SetLeft(element, x);
+            //Canvas.SetTop(element, y);
+            //location.x = element.ActualOffset.X;
+            //location.y = element.ActualOffset.Y;
+
+            this.undoList.Add(element);
+            this.undoLocList.Add(location);
+
             x = e.GetCurrentPoint(paintSurface).Position.X;
             y = e.GetCurrentPoint(paintSurface).Position.Y;
             Canvas.SetLeft(element, x);
             Canvas.SetTop(element, y);
-            this.undoList.Add(element);
+            //location.x = element.ActualOffset.X;
+            //location.y = element.ActualOffset.Y;
+
+            this.reList.Clear();         
+            this.redoLocList.Clear();
+
+
+            //paintSurface.Children.Clear();
+
+
+            //x = location.x;
+            //y = location.y;
+
+
+
+            //this.x = location.x;
+            //this.y = location.y;
+            //this.width = location.width;
+            //this.height = location.height;
+
+            ////paintSurface.Children.Add(element);
+            //this.x = location.x;
+            //this.y = location.y;
+            //this.width = location.width;
+            //this.height = location.height;
+            //paintSurface.Children.Clear();
+
         }
 
-        public void undoMoving(Canvas paintSurface)
+        //undo moving
+        public void undoMoving(Invoker invoker, Canvas paintSurface)
         {
-            FrameworkElement element = this.undoList.Last();
-            x = element.ActualOffset.X;
-            y = element.ActualOffset.Y;
-            Canvas.SetLeft(element, x);
-            Canvas.SetTop(element, y);
-            this.reList.Add(element);
+            //paintSurface.Children.Clear(); //repaint
+            if (undoLocList.Count() > 0) {
+
+                FrameworkElement element = this.undoList.Last();
+                Location location = this.undoLocList.Last();
+
+                if (element.Name == "Rectangle")
+                {
+                    // if the click source is a rectangle then we will create a new rectangle
+                    // and link it to the rectangle that sent the click event
+                    Rectangle activeRec = (Rectangle)element; // create the link between the sender rectangle
+                    paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
+
+                    Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
+                    newRectangle.Width = location.width; //set width
+                    newRectangle.Height = location.height; //set height     
+                    SolidColorBrush brush = new SolidColorBrush(); //brush
+                    brush.Color = Windows.UI.Colors.Blue; //standard brush color is blue
+                    newRectangle.Fill = brush; //fill color
+                    newRectangle.Name = "Rectangle"; //attach name
+
+                    Canvas.SetLeft(newRectangle, location.x);
+                    Canvas.SetTop(newRectangle, location.y);
+                    paintSurface.Children.Add(newRectangle);
+                    this.backuprectangle = newRectangle;
+
+                    this.reList.Add(newRectangle);
+
+                }
+                else if (element.Name == "Ellipse")
+                {
+                    // if the click source is a rectangle then we will create a new ellipse
+                    // and link it to the rectangle that sent the click event
+                    Ellipse activeEll = (Ellipse)element; // create the link between the sender ellipse
+                    paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
+
+                    Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
+                    newEllipse.Width = location.width;
+                    newEllipse.Height = location.height;
+                    SolidColorBrush brush = new SolidColorBrush();//brush
+                    brush.Color = Windows.UI.Colors.Blue;//standard brush color is blue
+                    newEllipse.Fill = brush;//fill color
+                    newEllipse.Name = "Ellipse";//attach name
+
+                    Canvas.SetLeft(newEllipse, location.x);//set left position
+                    Canvas.SetTop(newEllipse, location.y);//set top position
+                    paintSurface.Children.Add(newEllipse);
+                    this.backupellipse = newEllipse;
+
+                    this.reList.Add(newEllipse);
+                }
+
+                undoLocList.RemoveAt(undoLocList.Count - 1);
+                undoList.RemoveAt(undoList.Count - 1);
+                this.redoLocList.Add(location);
+                
+
+                //Location location = this.undoLocList.Last();
+
+                //FrameworkElement element = this.undoList.Last();
+                //FrameworkElement element = new FrameworkElement();
+
+                //Canvas.SetLeft(element, location.x);
+                //Canvas.SetTop(element, location.y);
+
+                //paintSurface.Children.Clear();
+                //FrameworkElement element = this.undoList.Last();
+                
+                //x = element.ActualOffset.X;
+                //y = element.ActualOffset.Y;
+                //Canvas.SetLeft(element, x);
+                //Canvas.SetTop(element, y);
+                
+                //paintSurface.Children.Add(element);     
+
+            }
+
+
         }
 
-        public void redoMoving(Canvas paintSurface)
+        //redo moving
+        //public void redoMoving(Canvas paintSurface)
+        //public void redoMoving(PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface)
+        public void redoMoving(Invoker invoker, Canvas paintSurface)
         {
-            FrameworkElement element = this.reList.Last();
-            x = element.ActualOffset.X;
-            y = element.ActualOffset.Y;
-            Canvas.SetLeft(element, x);
-            Canvas.SetTop(element, y);
-            this.undoList.Add(element);
+            //ICommand lastshape = invoker.redoList.Last();
+            //paintSurface.Children.Clear(); //repaint
+            //x = lastshape.Redo().x;
+
+
+
+            if (this.reList.Count() > 0)
+            {
+
+                FrameworkElement element = this.reList.Last();
+                Location location = this.redoLocList.Last();
+
+                //FrameworkElement element = this.reList.Last();
+                //this.reList.RemoveAt(this.reList.Count - 1);
+                //x = element.ActualOffset.X;
+                //y = element.ActualOffset.Y;
+                ////Canvas.SetLeft(element, x);
+                ////Canvas.SetTop(element, y);
+                //this.undoList.Add(element);
+                ////x = e.GetCurrentPoint(paintSurface).Position.X;
+                ////y = e.GetCurrentPoint(paintSurface).Position.Y;
+                //Canvas.SetLeft(element, this.x);
+                //Canvas.SetTop(element, this.y);
+                //this.undoList.Add(element);
+                ////paintSurface.Children.Add(element);
+
+                if (element.Name =="Rectangle")
+                {
+                    // if the click source is a rectangle then we will create a new rectangle
+                    // and link it to the rectangle that sent the click event
+                    Rectangle activeRec = (Rectangle)element; // create the link between the sender rectangle
+                    paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
+
+                    Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
+                    newRectangle.Width = width; //set width
+                    newRectangle.Height = height; //set height     
+                    SolidColorBrush brush = new SolidColorBrush(); //brush
+                    brush.Color = Windows.UI.Colors.Blue; //standard brush color is blue
+                    newRectangle.Fill = brush; //fill color
+                    newRectangle.Name = "Rectangle"; //attach name
+                    Canvas.SetLeft(newRectangle, this.x); //set left position
+                    Canvas.SetTop(newRectangle, this.y); //set top position 
+                    paintSurface.Children.Add(newRectangle);
+
+                    this.undoList.Add(newRectangle);
+                }
+                else if (element.Name == "Ellipse")
+                {
+                    // if the click source is a rectangle then we will create a new ellipse
+                    // and link it to the rectangle that sent the click event
+                    Ellipse activeEll = (Ellipse)element; // create the link between the sender ellipse
+                    paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
+
+                    Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
+                    newEllipse.Width = width;
+                    newEllipse.Height = height;
+                    SolidColorBrush brush = new SolidColorBrush();//brush
+                    brush.Color = Windows.UI.Colors.Blue;//standard brush color is blue
+                    newEllipse.Fill = brush;//fill color
+                    newEllipse.Name = "Ellipse";//attach name
+                    Canvas.SetLeft(newEllipse, this.x);//set left position
+                    Canvas.SetTop(newEllipse, this.y);//set top position
+                    paintSurface.Children.Add(newEllipse);
+
+                    this.undoList.Add(newEllipse);
+                }
+
+                redoLocList.RemoveAt(redoLocList.Count - 1);
+                reList.RemoveAt(reList.Count - 1);
+                //this.undoList.Add(element);
+                this.undoLocList.Add(location);
+
+            }
+
         }
 
         //resize shape
-        public void resize(PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface)
+        public void resize(Invoker invoker, PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface, Location location)
         {
+            //paintSurface.Children.Clear();
             double ex = e.GetCurrentPoint(paintSurface).Position.X;
             double ey = e.GetCurrentPoint(paintSurface).Position.Y;
             double lw = Convert.ToDouble(element.ActualOffset.X); //set width
@@ -163,28 +425,44 @@ namespace tekenprogramma
             this.undoList.Add(element);
         }
 
-        public void undoResize(Canvas paintSurface)
+        //undo resize
+        public void undoResize(Invoker invoker, Canvas paintSurface)
         {
-            FrameworkElement prevelement = this.undoList.Last();
-            backelement.Width = prevelement.Width;
-            backelement.Height = prevelement.Height;
-            x = prevelement.ActualOffset.X;
-            y = prevelement.ActualOffset.Y;
-            Canvas.SetLeft(prevelement, x);
-            Canvas.SetTop(prevelement, y);
-            this.reList.Add(backelement);
+            //paintSurface.Children.Clear(); //repaint
+            //FrameworkElement prevelement = this.undoList.Last();
+            //backelement.Width = prevelement.Width;
+            //backelement.Height = prevelement.Height;
+            //x = prevelement.ActualOffset.X;
+            //y = prevelement.ActualOffset.Y;
+            //Canvas.SetLeft(prevelement, x);
+            //Canvas.SetTop(prevelement, y);
+            //this.reList.Add(backelement);
+            paintSurface.Children.Clear(); //repaint
+            FrameworkElement element = this.undoList.Last();
+            //backelement.Width = prevelement.Width;
+            //backelement.Height = prevelement.Height;
+            //x = prevelement.ActualOffset.X;
+            //y = prevelement.ActualOffset.Y;
+            //Canvas.SetLeft(prevelement, x);
+            //Canvas.SetTop(prevelement, y);
+            this.reList.Add(element);
         }
 
-        public void redoResize(Canvas paintSurface)
+        //redo resize
+        public void redoResize(Invoker invoker, Canvas paintSurface)
         {
-            FrameworkElement prevelement = this.reList.Last();
-            backelement.Width = prevelement.Width;
-            backelement.Height = prevelement.Height;
-            x = prevelement.ActualOffset.X;
-            y = prevelement.ActualOffset.Y;
-            Canvas.SetLeft(prevelement, x);
-            Canvas.SetTop(prevelement, y);
-            this.undoList.Add(backelement);
+            //paintSurface.Children.Clear(); //repaint
+            //FrameworkElement prevelement = this.reList.Last();
+            //backelement.Width = prevelement.Width;
+            //backelement.Height = prevelement.Height;
+            //x = prevelement.ActualOffset.X;
+            //y = prevelement.ActualOffset.Y;
+            //Canvas.SetLeft(prevelement, x);
+            //Canvas.SetTop(prevelement, y);
+            //this.undoList.Add(backelement);
+            //paintSurface.Children.Clear(); //repaint
+            FrameworkElement element = this.reList.Last();
+            this.undoList.Add(element);
         }
 
         //saving

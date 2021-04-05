@@ -24,8 +24,8 @@ namespace tekenprogramma
     public class Invoker
     {
         public List<ICommand> actionsList = new List<ICommand>();
-        private List<ICommand> redoList = new List<ICommand>();
-        
+        public List<ICommand> redoList = new List<ICommand>();
+
         public Invoker()
         {
             this.actionsList = new List<ICommand>();
@@ -33,6 +33,7 @@ namespace tekenprogramma
 
         }
 
+        //execute
         public void Execute(ICommand cmd)
         {
             actionsList.Add(cmd);
@@ -40,29 +41,33 @@ namespace tekenprogramma
             cmd.Execute();
         }
 
+        //undo
         public void Undo()
         {
             if (actionsList.Count >= 1)
             {
-                ICommand cmd = actionsList.Last();
-                cmd.Undo();
+                ICommand cmd = actionsList.Last();           
                 actionsList.RemoveAt(actionsList.Count - 1);
                 redoList.Add(cmd);
-                foreach (ICommand icmd in actionsList)
-                {
-                    icmd.Execute();
-                }
+                cmd.Undo();   
             }
         }
 
+        //redo
         public void Redo()
         {
             if (redoList.Count >= 1)
             {
                 ICommand cmd = redoList.Last();
-                cmd.Redo();
-                redoList.RemoveAt(redoList.Count - 1);
                 actionsList.Add(cmd);
+                redoList.RemoveAt(redoList.Count - 1);
+                cmd.Redo();
+                //repaint actions
+                //foreach (ICommand icmd in actionsList)
+                //{
+                //    icmd.Execute();
+                //}
+
             }
         }
     }
@@ -136,29 +141,40 @@ namespace tekenprogramma
         private Invoker invoker;
         private Canvas paintSurface;
         private FrameworkElement element;
+        private Location location;
 
-        public Moving(Shape shape, PointerRoutedEventArgs e, Canvas paintSurface, Invoker invoker, FrameworkElement element)
+        public Moving(Shape shape, PointerRoutedEventArgs e, Canvas paintSurface, Invoker invoker, FrameworkElement element, Location location)
         {
             this.e = e;
             this.shape = shape;
             this.invoker = invoker;
             this.paintSurface = paintSurface;
             this.element = element;
+            this.location = location;
         }
 
         public void Execute()
         {
-            this.shape.moving(this.e,this.element,this.paintSurface);
+            this.shape.moving(this.invoker,this.e,this.element,this.paintSurface, this.location);
         }
 
         public void Undo()
         {
-            this.shape.undoMoving(this.paintSurface);
+            //this.shape.undoMoving(this.invoker, this.paintSurface, this.location);
+            this.shape.undoMoving(this.invoker, this.paintSurface);
+            //this.shape.remove(this.invoker, this.paintSurface);
+            //this.shape.undoMoving();
+            //this.shape.remove(this.invoker, this.paintSurface);
         }
 
         public void Redo()
         {
-            this.shape.redoMoving(this.paintSurface);
+            //this.shape.redoMoving(this.paintSurface);
+            //this.shape.moving(this.e, this.element, this.paintSurface, this.location);
+            //this.shape.redoMoving(this.e, this.element, this.paintSurface);
+            //this.shape.redoMoving();
+            this.shape.redoMoving(this.invoker, this.paintSurface);
+            //this.shape.moving(this.invoker, this.e, this.element, this.paintSurface, this.location);
         }
     }
 
@@ -171,8 +187,9 @@ namespace tekenprogramma
         private Invoker invoker;
         private Canvas paintSurface;
         private FrameworkElement element;
+        private Location location;
 
-        public Resize(Shape shape, PointerRoutedEventArgs e, Canvas paintSurface, Invoker invoker, FrameworkElement element)
+        public Resize(Shape shape, PointerRoutedEventArgs e, Canvas paintSurface, Invoker invoker, FrameworkElement element, Location location)
         {
 
             this.e = e;
@@ -180,21 +197,25 @@ namespace tekenprogramma
             this.invoker = invoker;
             this.paintSurface = paintSurface;
             this.element = element;
+            this.location = location;
         }
 
         public void Execute()
         {
-            this.shape.resize(this.e,this.element,this.paintSurface);
+            this.shape.resize(this.invoker, this.e,this.element,this.paintSurface, this.location);
         }
 
         public void Undo()
         {
-            this.shape.remove(this.invoker, this.paintSurface);
+            //this.shape.remove(this.invoker, this.paintSurface);
+            //this.shape.remove(this.invoker, this.paintSurface);
+            this.shape.undoResize(this.invoker, this.paintSurface);
         }
 
         public void Redo()
         {
-            this.shape.resize(this.e,this.element,this.paintSurface);
+            this.shape.redoResize(this.invoker, this.paintSurface);
+            //this.shape.resize(this.invoker, this.e,this.element,this.paintSurface);
         }
     }
 

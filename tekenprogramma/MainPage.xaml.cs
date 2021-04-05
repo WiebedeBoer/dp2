@@ -45,8 +45,8 @@ namespace tekenprogramma
                     double width = tmp.Width;
                     double height = tmp.Height;
                     Shape shape = new Shape(left, top, width, height);
-                    ICommand select = new Select(shape, e);
-                    this.invoker.Execute(select);
+                    //ICommand select = new Select(shape, e);
+                    //this.invoker.Execute(select);
                     selecting = true;
                     selectedShapesList.Add(shape);
                     selectedElement = tmp;
@@ -60,8 +60,8 @@ namespace tekenprogramma
                     double width = tmp.Width;
                     double height = tmp.Height;
                     Shape shape = new Shape(left, top, width, height);
-                    ICommand select = new Select(shape, e);
-                    this.invoker.Execute(select);
+                    //ICommand select = new Select(shape, e);
+                    //this.invoker.Execute(select);
                     selecting = true;
                     selectedShapesList.Add(shape);
                     selectedElement = tmp;
@@ -114,7 +114,12 @@ namespace tekenprogramma
         private void movingShape(object sender, PointerRoutedEventArgs e)
         {
             Shape shape = selectedShapesList.First();
-            ICommand place = new Moving(shape, e, paintSurface, invoker, selectedElement);
+            Location location = new Location();
+            location.x = e.GetCurrentPoint(paintSurface).Position.X;
+            location.y = e.GetCurrentPoint(paintSurface).Position.Y;
+            location.width = shape.width;
+            location.height = shape.height;
+            ICommand place = new Moving(shape, e, paintSurface, invoker, selectedElement, location);
             this.invoker.Execute(place);
             type = "deselecting";
             selecting = false;
@@ -126,7 +131,12 @@ namespace tekenprogramma
         private void resizingShape(object sender, PointerRoutedEventArgs e)
         {
             Shape shape = selectedShapesList.First();
-            ICommand place = new Resize(shape, e, paintSurface, invoker, selectedElement);
+            Location location = new Location();
+            location.x = shape.x;
+            location.y = shape.y;
+            location.width = shape.width;
+            location.height = shape.height;
+            ICommand place = new Resize(shape, e, paintSurface, invoker, selectedElement, location);
             this.invoker.Execute(place);
             type = "deselecting";
             selecting = false;
