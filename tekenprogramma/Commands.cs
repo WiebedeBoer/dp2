@@ -36,17 +36,17 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            this.shape.makeRectangle(this.invoker, this.paintSurface);
+            this.shape.MakeRectangle(this.invoker, this.paintSurface);
         }
 
         public void Undo()
         {
-            this.shape.remove(this.invoker, this.paintSurface);
+            this.shape.Remove(this.invoker, this.paintSurface);
         }
 
         public void Redo()
         {
-            this.shape.makeRectangle(this.invoker, this.paintSurface);
+            this.shape.Add(this.invoker, this.paintSurface);
         }
     }
 
@@ -66,17 +66,17 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            this.shape.makeEllipse(this.invoker, this.paintSurface);
+            this.shape.MakeEllipse(this.invoker, this.paintSurface);
         }
 
         public void Undo()
         {
-            this.shape.remove(this.invoker, this.paintSurface);
+            this.shape.Remove(this.invoker, this.paintSurface);
         }
 
         public void Redo()
         {
-            this.shape.makeEllipse(this.invoker, this.paintSurface);
+            this.shape.Add(this.invoker, this.paintSurface);
         }
     }
 
@@ -101,17 +101,17 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            this.shape.moving(this.invoker, this.paintSurface, this.location, this.element);
+            this.shape.Moving(this.invoker, this.paintSurface, this.location, this.element);
         }
 
         public void Undo()
         {
-            this.shape.undoMoving(this.invoker, this.paintSurface);
+            this.shape.MoveBack(this.invoker, this.paintSurface);
         }
 
         public void Redo()
         {
-            this.shape.moving(this.invoker, this.paintSurface, this.location, this.element);
+            this.shape.MoveAgain(this.invoker, this.paintSurface);
         }
     }
 
@@ -137,17 +137,17 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            this.shape.resize(this.invoker, this.e, this.element,this.paintSurface, this.location);
+            this.shape.Resize(this.invoker, this.e, this.element,this.paintSurface, this.location);
         }
 
         public void Undo()
         {
-            this.shape.undoResize(this.invoker, this.paintSurface);
+            this.shape.MoveBack(this.invoker, this.paintSurface);
         }
 
         public void Redo()
         {
-            this.shape.redoResize(this.invoker, this.paintSurface);
+            this.shape.MoveAgain(this.invoker, this.paintSurface);
         }
     }
 
@@ -166,17 +166,17 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            this.shape.select(this.e);
+            this.shape.Select(this.e);
         }
 
         public void Undo()
         {
-            this.shape.deselect(this.e);
+            this.shape.Deselect(this.e);
         }
 
         public void Redo()
         {
-            this.shape.select(this.e);
+            this.shape.Select(this.e);
         }
     }
 
@@ -195,17 +195,17 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            this.shape.deselect(this.e);
+            this.shape.Deselect(this.e);
         }
 
         public void Undo()
         {
-            this.shape.select(this.e);
+            this.shape.Select(this.e);
         }
 
         public void Redo()
         {
-            this.shape.deselect(this.e);
+            this.shape.Deselect(this.e);
         }
     }
 
@@ -223,7 +223,7 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            this.mycommand.saving(paintSurface);
+            this.mycommand.Saving(paintSurface);
         }
 
         public void Undo()
@@ -251,7 +251,7 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            this.mycommand.loading(this.paintSurface);
+            this.mycommand.Loading(this.paintSurface);
         }
 
         public void Undo()

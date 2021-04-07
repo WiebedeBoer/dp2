@@ -17,10 +17,12 @@ namespace tekenprogramma
         public List<ICommand> actionsList = new List<ICommand>();
         public List<ICommand> redoList = new List<ICommand>();
 
-        public List<FrameworkElement> prev = new List<FrameworkElement>();
-        public List<FrameworkElement> next = new List<FrameworkElement>();
+        public List<FrameworkElement> drawnElements = new List<FrameworkElement>();
+        public List<FrameworkElement> removedElements = new List<FrameworkElement>();
+        public List<FrameworkElement> movedElements = new List<FrameworkElement>();
 
         public int counter = 0;
+        public int executer = 0;
 
         public Invoker()
         {
@@ -34,6 +36,8 @@ namespace tekenprogramma
             actionsList.Add(cmd);
             redoList.Clear();
             cmd.Execute();
+            counter++;
+            executer++;
         }
 
         //undo
@@ -45,6 +49,7 @@ namespace tekenprogramma
                 actionsList.RemoveAt(actionsList.Count - 1);
                 redoList.Add(cmd);
                 cmd.Undo();
+                counter--;
             }
         }
 
@@ -57,6 +62,7 @@ namespace tekenprogramma
                 actionsList.Add(cmd);
                 redoList.RemoveAt(redoList.Count - 1);
                 cmd.Redo();
+                counter++;
             }
         }
 

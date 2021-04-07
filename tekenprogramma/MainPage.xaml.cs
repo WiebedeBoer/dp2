@@ -56,12 +56,12 @@ namespace tekenprogramma
                     //move
                     if (type == "Move")
                     {
-                        movingShape(sender, e);
+                        MovingShape(sender, e);
                     }
                     //resize
                     else if (type == "Resize")
                     {
-                        resizingShape(sender, e);
+                        ResizingShape(sender, e);
                     }
                     //make shapes
                     else if (type == "Rectangle")
@@ -81,12 +81,12 @@ namespace tekenprogramma
                 //move
                 if (type == "Move")
                 {
-                    movingShape(sender, e);
+                    MovingShape(sender, e);
                 }
                 //resize
                 else if (type == "Resize")
                 {
-                    resizingShape(sender, e);
+                    ResizingShape(sender, e);
                 }
                 //make
                 else if (type == "Rectangle")
@@ -119,7 +119,7 @@ namespace tekenprogramma
         }
 
         //moving shape
-        private void movingShape(object sender, PointerRoutedEventArgs e)
+        private void MovingShape(object sender, PointerRoutedEventArgs e)
         {
             ////remove selected
             //if (selectedElement.Name == "Rectangle")
@@ -147,7 +147,7 @@ namespace tekenprogramma
         }
 
         //resizing shape
-        private void resizingShape(object sender, PointerRoutedEventArgs e)
+        private void ResizingShape(object sender, PointerRoutedEventArgs e)
         {
             ////remove selected
             //if (selectedElement.Name == "Rectangle")
@@ -222,6 +222,8 @@ namespace tekenprogramma
             FrameworkElement button = e.OriginalSource as FrameworkElement;
             type = button.Name;
             invoker.Undo();
+            //paintSurface.Children.Clear();
+            //invoker.Repaint();
             //Reshape(paintSurface); //repaint
         }
 
@@ -231,6 +233,8 @@ namespace tekenprogramma
             FrameworkElement button = e.OriginalSource as FrameworkElement;
             type = button.Name;
             invoker.Redo();
+            //paintSurface.Children.Clear();
+            //invoker.Repaint();
             //Reshape(paintSurface); //repaint
         }
 
@@ -269,42 +273,6 @@ namespace tekenprogramma
         private void Height_TextChanged(object sender, TextChangedEventArgs e)
         {
 
-        }
-
-        //reshape
-        public void Reshape(Canvas paintSurface)
-        {
-            paintSurface.Children.Clear();
-            foreach (FrameworkElement element in invoker.prev)
-            {
-
-                if (element.Name == "Rectangle")
-                {
-                    Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
-                    newRectangle.Width = element.Width; //set width
-                    newRectangle.Height = element.Height; //set height     
-                    SolidColorBrush brush = new SolidColorBrush(); //brush
-                    brush.Color = Windows.UI.Colors.Blue; //standard brush color is blue
-                    newRectangle.Fill = brush; //fill color
-                    newRectangle.Name = "Rectangle"; //attach name
-                    Canvas.SetLeft(newRectangle, element.ActualOffset.X); //set left position
-                    Canvas.SetTop(newRectangle, element.ActualOffset.Y); //set top position 
-                    paintSurface.Children.Add(newRectangle);
-                }
-                else if (element.Name == "Ellipse")
-                {
-                    Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
-                    newEllipse.Width = element.Width;
-                    newEllipse.Height = element.Height;
-                    SolidColorBrush brush = new SolidColorBrush();//brush
-                    brush.Color = Windows.UI.Colors.Blue;//standard brush color is blue
-                    newEllipse.Fill = brush;//fill color
-                    newEllipse.Name = "Ellipse";//attach name
-                    Canvas.SetLeft(newEllipse, element.ActualOffset.X);//set left position
-                    Canvas.SetTop(newEllipse, element.ActualOffset.Y);//set top position
-                    paintSurface.Children.Add(newEllipse);
-                }
-            }
         }
 
     }

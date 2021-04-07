@@ -35,18 +35,11 @@ namespace tekenprogramma
         public Invoker invoker;
         public Canvas paintSurface;
 
-        public FrameworkElement backelement; //back element
-        public FrameworkElement prevelement;
+        public FrameworkElement prevelement; //prev element
         public FrameworkElement nextelement; //next element
 
-        public FrameworkElement lastelement;
-        public FrameworkElement firstelement;
-        string type = "Rectangle"; //default shape type
-
-        private List<FrameworkElement> undoList = new List<FrameworkElement>();
-        private List<FrameworkElement> redoList = new List<FrameworkElement>();
-        //private List<Location> undoLocList = new List<Location>();
-        //private List<Location> redoLocList = new List<Location>();
+        //public List<FrameworkElement> drawnElements = new List<FrameworkElement>();
+        //public List<FrameworkElement> removedElements = new List<FrameworkElement>();
 
         //file IO
         public string fileText { get; set; }     
@@ -61,19 +54,228 @@ namespace tekenprogramma
         }
 
         // Selects the shape
-        public void select(PointerRoutedEventArgs e)
+        public void Select(PointerRoutedEventArgs e)
         {
             //this.selected = true;
         }
 
         // Deselects the shape
-        public void deselect(PointerRoutedEventArgs e)
+        public void Deselect(PointerRoutedEventArgs e)
         {
             //this.selected = false;
         }
 
+        //
+        //repaint
+        //
+        public void Repaint(Invoker invoker, Canvas paintSurface)
+        {
+            paintSurface.Children.Clear();
+            foreach(FrameworkElement drawelement in invoker.drawnElements)
+            {
+                paintSurface.Children.Add(drawelement); //add
+            }
+        }
+
+        //
+        //creation
+        //
+
+        //create rectangle
+        public void MakeRectangle(Invoker invoker, Canvas paintSurface)
+        {
+            Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
+            newRectangle.AccessKey = invoker.executer.ToString();
+            newRectangle.Width = width; //set width
+            newRectangle.Height = height; //set height     
+            SolidColorBrush brush = new SolidColorBrush(); //brush
+            brush.Color = Windows.UI.Colors.Blue; //standard brush color is blue
+            newRectangle.Fill = brush; //fill color
+            newRectangle.Name = "Rectangle"; //attach name
+            Canvas.SetLeft(newRectangle, x); //set left position
+            Canvas.SetTop(newRectangle, y); //set top position 
+            invoker.drawnElements.Add(newRectangle);
+            Repaint(invoker, paintSurface); //repaint
+        }
+
+        //create ellipse
+        public void MakeEllipse(Invoker invoker, Canvas paintSurface)
+        {
+            Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
+            newEllipse.AccessKey = invoker.executer.ToString();
+            newEllipse.Width = width;
+            newEllipse.Height = height;  
+            SolidColorBrush brush = new SolidColorBrush();//brush
+            brush.Color = Windows.UI.Colors.Blue;//standard brush color is blue
+            newEllipse.Fill = brush;//fill color
+            newEllipse.Name = "Ellipse";//attach name
+            Canvas.SetLeft(newEllipse, x);//set left position
+            Canvas.SetTop(newEllipse, y);//set top position   
+            invoker.drawnElements.Add(newEllipse);
+            Repaint(invoker, paintSurface); //repaint
+        }
+
+        //
+        //undo redo
+        //
+
+        //undo create
+        public void Remove(Invoker invoker, Canvas paintSurface)
+        {
+            //remove previous
+            prevelement = invoker.drawnElements.Last();
+            invoker.removedElements.Add(prevelement);
+            invoker.drawnElements.RemoveAt(invoker.drawnElements.Count() -1);
+            Repaint(invoker, paintSurface); //repaint
+        }
+
+        //redo create
+        public void Add(Invoker invoker, Canvas paintSurface)
+        {
+            //create next
+            nextelement = invoker.removedElements.Last();
+            invoker.drawnElements.Add(nextelement);
+            invoker.removedElements.RemoveAt(invoker.removedElements.Count() - 1);
+            Repaint(invoker, paintSurface); //repaint
+        }
+
+        //
+        //moving
+        //
+
+        //new moving shape
+        public void Moving(Invoker invoker, Canvas paintSurface, Location location, FrameworkElement element)
+        {
+            KeyNumber(element,invoker); //move selected at removed
+            //create at new location
+            if (element.Name == "Rectangle")
+            {
+                Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
+                newRectangle.AccessKey = invoker.executer.ToString();
+                newRectangle.Width = location.width; //set width
+                newRectangle.Height = location.height; //set height     
+                SolidColorBrush brush = new SolidColorBrush(); //brush
+                brush.Color = Windows.UI.Colors.Yellow; //standard brush color is blue
+                newRectangle.Fill = brush; //fill color
+                newRectangle.Name = "Rectangle"; //attach name
+                Canvas.SetLeft(newRectangle, location.x);//set left position
+                Canvas.SetTop(newRectangle, location.y); //set top position          
+                invoker.drawnElements.Add(newRectangle);
+            }
+            else if (element.Name == "Ellipse")
+            {
+                Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
+                newEllipse.AccessKey = invoker.executer.ToString();
+                newEllipse.Width = location.width;
+                newEllipse.Height = location.height;
+                SolidColorBrush brush = new SolidColorBrush();//brush
+                brush.Color = Windows.UI.Colors.Yellow;//standard brush color is blue
+                newEllipse.Fill = brush;//fill color
+                newEllipse.Name = "Ellipse";//attach name
+                Canvas.SetLeft(newEllipse, location.x);//set left position
+                Canvas.SetTop(newEllipse, location.y);//set top position
+                invoker.drawnElements.Add(newEllipse);
+            }
+            Repaint(invoker, paintSurface); //repaint
+
+        }
+
+        //remove selected element by access key
+        public void KeyNumber(FrameworkElement element, Invoker invoker)
+        {
+            string key = element.AccessKey;
+            int inc = 0;
+            int number = 0;
+            foreach (FrameworkElement drawn in invoker.drawnElements)
+            {
+                if (drawn.AccessKey == key)
+                {
+                    number = inc;
+                }
+                inc++;
+            }
+            invoker.drawnElements.RemoveAt(number);
+            invoker.removedElements.Add(element);
+            invoker.movedElements.Add(element);
+        }
+
+        //move back element
+        public void MoveBack(Invoker invoker, Canvas paintSurface)
+        {
+            //remove next
+            prevelement = invoker.drawnElements.Last();
+            invoker.removedElements.Add(prevelement);
+            invoker.drawnElements.RemoveAt(invoker.drawnElements.Count() - 1); 
+            //move back moved element
+            nextelement = invoker.movedElements.Last();
+            invoker.movedElements.RemoveAt(invoker.movedElements.Count() -1);
+            invoker.drawnElements.Add(nextelement);
+            Repaint(invoker, paintSurface); //repaint   
+        }
+
+        //move back element
+        public void MoveAgain(Invoker invoker, Canvas paintSurface)
+        {
+            //remove previous
+            prevelement = invoker.drawnElements.Last();
+            nextelement = invoker.removedElements.Last();
+            invoker.removedElements.Add(prevelement);
+            invoker.movedElements.Add(prevelement);
+            invoker.drawnElements.RemoveAt(invoker.drawnElements.Count() - 1);
+            //move again moved element
+            invoker.drawnElements.Add(nextelement);   
+            Repaint(invoker, paintSurface); //repaint   
+        }
+
+        //
+        //resizing
+        //
+
+        //resize shape
+        public void Resize(Invoker invoker, PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface, Location location)
+        {
+            KeyNumber(element, invoker); //move selected at removed
+            //calculate size
+            double ex = e.GetCurrentPoint(paintSurface).Position.X;
+            double ey = e.GetCurrentPoint(paintSurface).Position.Y;
+            double lw = Convert.ToDouble(element.ActualOffset.X); //set width
+            double lh = Convert.ToDouble(element.ActualOffset.Y); //set height
+            double w = ReturnSmallest(ex,lw);
+            double h = ReturnSmallest(ey,lh);
+            //create at new size
+            if (element.Name == "Rectangle")
+            {
+                Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
+                newRectangle.AccessKey = invoker.executer.ToString();
+                newRectangle.Width = w; //set width
+                newRectangle.Height = h; //set height     
+                SolidColorBrush brush = new SolidColorBrush(); //brush
+                brush.Color = Windows.UI.Colors.Yellow; //standard brush color is blue
+                newRectangle.Fill = brush; //fill color
+                newRectangle.Name = "Rectangle"; //attach name
+                Canvas.SetLeft(newRectangle, lw);
+                Canvas.SetTop(newRectangle, lh);
+                invoker.drawnElements.Add(newRectangle);
+            }
+            else if (element.Name == "Ellipse")
+            {
+                Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
+                newEllipse.AccessKey = invoker.executer.ToString();
+                newEllipse.Width = w; //set width
+                newEllipse.Height = h; //set height 
+                SolidColorBrush brush = new SolidColorBrush();//brush
+                brush.Color = Windows.UI.Colors.Yellow;//standard brush color is blue
+                newEllipse.Fill = brush;//fill color
+                newEllipse.Name = "Ellipse";//attach name
+                Canvas.SetLeft(newEllipse, lw);//set left position
+                Canvas.SetTop(newEllipse, lh);//set top position
+                invoker.drawnElements.Add(newEllipse);
+            }
+            Repaint(invoker, paintSurface); //repaint
+        }
+
         //give smallest
-        public double returnSmallest(double first, double last)
+        public double ReturnSmallest(double first, double last)
         {
             if (first < last)
             {
@@ -85,266 +287,10 @@ namespace tekenprogramma
             }
         }
 
-        //create rectangle
-        public void makeRectangle(Invoker invoker, Canvas paintSurface)
-        {
-            this.type = "Rectangle";
-            Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
-            newRectangle.Width = width; //set width
-            newRectangle.Height = height; //set height     
-            SolidColorBrush brush = new SolidColorBrush(); //brush
-            brush.Color = Windows.UI.Colors.Blue; //standard brush color is blue
-            newRectangle.Fill = brush; //fill color
-            newRectangle.Name = "Rectangle"; //attach name
-            Canvas.SetLeft(newRectangle, x); //set left position
-            Canvas.SetTop(newRectangle, y); //set top position 
-            paintSurface.Children.Add(newRectangle); //add
-            backelement = newRectangle;
-        }
-
-        //create ellipse
-        public void makeEllipse(Invoker invoker, Canvas paintSurface)
-        {
-            this.type = "Ellipse";
-            Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
-            newEllipse.Width = width;
-            newEllipse.Height = height;  
-            SolidColorBrush brush = new SolidColorBrush();//brush
-            brush.Color = Windows.UI.Colors.Blue;//standard brush color is blue
-            newEllipse.Fill = brush;//fill color
-            newEllipse.Name = "Ellipse";//attach name
-            Canvas.SetLeft(newEllipse, x);//set left position
-            Canvas.SetTop(newEllipse, y);//set top position
-            paintSurface.Children.Add(newEllipse); //add
-            backelement = newEllipse;
-        }
-
-        //undo create removal
-        public void remove(Invoker invoker, Canvas paintSurface)
-        {
-            if (this.type == "Rectangle")
-            {
-                // if the click source is a rectangle then we will create a new rectangle
-                // and link it to the rectangle that sent the click event
-                Rectangle activeRec = (Rectangle)backelement; // create the link between the sender rectangle
-                paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
-            }
-            else if (this.type == "Ellipse")
-            {
-                // if the click source is a rectangle then we will create a new ellipse
-                // and link it to the rectangle that sent the click event
-                Ellipse activeEll = (Ellipse)backelement; // create the link between the sender ellipse
-                paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
-            }
-        }
-
-        //undo move removal
-        public void removal(Invoker invoker, Canvas paintSurface, FrameworkElement element)
-        {
-            if (element.Name == "Rectangle")
-            {
-                // if the click source is a rectangle then we will create a new rectangle
-                // and link it to the rectangle that sent the click event
-                Rectangle activeRec = (Rectangle)element; // create the link between the sender rectangle
-                paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
-            }
-            else if (element.Name == "Ellipse")
-            {
-                // if the click source is a rectangle then we will create a new ellipse
-                // and link it to the rectangle that sent the click event
-                Ellipse activeEll = (Ellipse)element; // create the link between the sender ellipse
-                paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
-            }
-        }
-
-        //new moving shape
-        public void creator(Invoker invoker, Canvas paintSurface, FrameworkElement element)
-        {
-            //create at new location
-            if (element.Name == "Rectangle")
-            {
-                Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
-                newRectangle.Width = element.Width; //set width
-                newRectangle.Height = element.Height; //set height     
-                SolidColorBrush brush = new SolidColorBrush(); //brush
-                brush.Color = Windows.UI.Colors.Yellow; //standard brush color is blue
-                newRectangle.Fill = brush; //fill color
-                newRectangle.Name = "Rectangle"; //attach name
-                Canvas.SetLeft(newRectangle, element.ActualOffset.X);
-                Canvas.SetTop(newRectangle, element.ActualOffset.Y);
-                paintSurface.Children.Add(newRectangle); //add
-            }
-            else if (element.Name == "Ellipse")
-            {
-                Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
-                newEllipse.Width = element.Width;
-                newEllipse.Height = element.Height;
-                SolidColorBrush brush = new SolidColorBrush();//brush
-                brush.Color = Windows.UI.Colors.Yellow;//standard brush color is blue
-                newEllipse.Fill = brush;//fill color
-                newEllipse.Name = "Ellipse";//attach name
-                Canvas.SetLeft(newEllipse, element.ActualOffset.X);
-                Canvas.SetTop(newEllipse, element.ActualOffset.Y);
-                paintSurface.Children.Add(newEllipse); //add
-            }
-        }
-
-        //new moving shape
-        public void moving(Invoker invoker, Canvas paintSurface, Location location, FrameworkElement element)
-        {
-            //create at new location
-            if (element.Name == "Rectangle")
-            {
-                Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
-                newRectangle.Width = location.width; //set width
-                newRectangle.Height = location.height; //set height     
-                SolidColorBrush brush = new SolidColorBrush(); //brush
-                brush.Color = Windows.UI.Colors.Yellow; //standard brush color is blue
-                newRectangle.Fill = brush; //fill color
-                newRectangle.Name = "Rectangle"; //attach name
-                Canvas.SetLeft(newRectangle, location.x);
-                Canvas.SetTop(newRectangle, location.y);
-                paintSurface.Children.Add(newRectangle); //add
-                backelement = newRectangle;
-                nextelement = element;
-            }
-            else if (element.Name == "Ellipse")
-            {
-                Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
-                newEllipse.Width = location.width;
-                newEllipse.Height = location.height;
-                SolidColorBrush brush = new SolidColorBrush();//brush
-                brush.Color = Windows.UI.Colors.Yellow;//standard brush color is blue
-                newEllipse.Fill = brush;//fill color
-                newEllipse.Name = "Ellipse";//attach name
-                Canvas.SetLeft(newEllipse, location.x);//set left position
-                Canvas.SetTop(newEllipse, location.y);//set top position
-                paintSurface.Children.Add(newEllipse); //add
-                backelement = newEllipse;
-                nextelement = element;
-            }
-            //remove previous
-            removal(invoker, paintSurface, element);
-        }
-
-        //undo moving shape
-        public void undoMoving(Invoker invoker, Canvas paintSurface)
-        {
-            if (backelement.Name == "Rectangle")
-            {
-                // if the click source is a rectangle then we will create a new rectangle
-                // and link it to the rectangle that sent the click event
-                Rectangle activeRec = (Rectangle)backelement; // create the link between the sender rectangle
-                paintSurface.Children.Remove(activeRec); // find the rectangle and remove it from the canvas
-                backelement = nextelement;
-                nextelement = backelement;
-            }
-            else if (backelement.Name == "Ellipse")
-            {
-                // if the click source is a rectangle then we will create a new ellipse
-                // and link it to the rectangle that sent the click event
-                Ellipse activeEll = (Ellipse)backelement; // create the link between the sender ellipse
-                paintSurface.Children.Remove(activeEll); // find the ellipse and remove it from the canvas
-                backelement = nextelement;
-                nextelement = backelement;
-            }
-            //create previous
-            creator(invoker, paintSurface, nextelement);
-        }
-
-        //redo moving shape
-        public void redoMoving(Invoker invoker, Canvas paintSurface, Location location, FrameworkElement element)
-        {
-            //create at new location
-            if (element.Name == "Rectangle")
-            {
-                Rectangle newRectangle = new Rectangle(); //instance of new rectangle shape
-                newRectangle.Width = location.width; //set width
-                newRectangle.Height = location.height; //set height     
-                SolidColorBrush brush = new SolidColorBrush(); //brush
-                brush.Color = Windows.UI.Colors.Yellow; //standard brush color is blue
-                newRectangle.Fill = brush; //fill color
-                newRectangle.Name = "Rectangle"; //attach name
-                Canvas.SetLeft(newRectangle, location.x);
-                Canvas.SetTop(newRectangle, location.y);
-                paintSurface.Children.Add(newRectangle); //add
-                backelement = newRectangle;
-                nextelement = element;
-            }
-            else if (element.Name == "Ellipse")
-            {
-                Ellipse newEllipse = new Ellipse(); //instance of new ellipse shape
-                newEllipse.Width = location.width;
-                newEllipse.Height = location.height;
-                SolidColorBrush brush = new SolidColorBrush();//brush
-                brush.Color = Windows.UI.Colors.Yellow;//standard brush color is blue
-                newEllipse.Fill = brush;//fill color
-                newEllipse.Name = "Ellipse";//attach name
-                Canvas.SetLeft(newEllipse, location.x);//set left position
-                Canvas.SetTop(newEllipse, location.y);//set top position
-                paintSurface.Children.Add(newEllipse); //add
-                backelement = newEllipse;
-                nextelement = element;
-            }
-            //remove previous
-            removal(invoker, paintSurface, nextelement);
-        }
-
-        //resize shape
-        public void resize(Invoker invoker, PointerRoutedEventArgs e, FrameworkElement element, Canvas paintSurface, Location location)
-        {
-            double ex = e.GetCurrentPoint(paintSurface).Position.X;
-            double ey = e.GetCurrentPoint(paintSurface).Position.Y;
-            double lw = Convert.ToDouble(element.ActualOffset.X); //set width
-            double lh = Convert.ToDouble(element.ActualOffset.Y); //set height
-            double w = returnSmallest(ex,lw);
-            double h = returnSmallest(ey,lh);
-            element.Width = w;
-            element.Height = h;
-        }
-
-        //undo resize
-        public void undoResize(Invoker invoker, Canvas paintSurface)
-        {
-            //paintSurface.Children.Clear(); //repaint
-            //FrameworkElement prevelement = this.undoList.Last();
-            //backelement.Width = prevelement.Width;
-            //backelement.Height = prevelement.Height;
-            //x = prevelement.ActualOffset.X;
-            //y = prevelement.ActualOffset.Y;
-            //Canvas.SetLeft(prevelement, x);
-            //Canvas.SetTop(prevelement, y);
-            //this.reList.Add(backelement);
-            //paintSurface.Children.Clear(); //repaint
-            FrameworkElement element = this.undoList.Last();
-            //backelement.Width = prevelement.Width;
-            //backelement.Height = prevelement.Height;
-            //x = prevelement.ActualOffset.X;
-            //y = prevelement.ActualOffset.Y;
-            //Canvas.SetLeft(prevelement, x);
-            //Canvas.SetTop(prevelement, y);
-            this.redoList.Add(element);
-        }
-
-        //redo resize
-        public void redoResize(Invoker invoker, Canvas paintSurface)
-        {
-            //paintSurface.Children.Clear(); //repaint
-            //FrameworkElement prevelement = this.reList.Last();
-            //backelement.Width = prevelement.Width;
-            //backelement.Height = prevelement.Height;
-            //x = prevelement.ActualOffset.X;
-            //y = prevelement.ActualOffset.Y;
-            //Canvas.SetLeft(prevelement, x);
-            //Canvas.SetTop(prevelement, y);
-            //this.undoList.Add(backelement);
-            //paintSurface.Children.Clear(); //repaint
-            FrameworkElement element = this.redoList.Last();
-            this.undoList.Add(element);
-        }
-
+        //
         //saving
-        public async void saving(Canvas paintSurface)
+        //
+        public async void Saving(Canvas paintSurface)
         {
 
             try
@@ -373,6 +319,7 @@ namespace tekenprogramma
                 Windows.Storage.StorageFile sampleFile = await storageFolder.CreateFileAsync("dp2data.txt", Windows.Storage.CreationCollisionOption.ReplaceExisting);
                 await Windows.Storage.FileIO.WriteTextAsync(sampleFile, lines);
             }
+            //file errors
             catch (System.IO.FileNotFoundException)
             {
                 fileText = "File not found.";
@@ -392,8 +339,10 @@ namespace tekenprogramma
 
         }
 
+        //
         //loading
-        public async void loading(Canvas paintSurface)
+        //
+        public async void Loading(Canvas paintSurface)
         {
             //clear previous canvas
             paintSurface.Children.Clear();
@@ -410,18 +359,18 @@ namespace tekenprogramma
                     string[] line = Regex.Split(s, "\\s+");
                     if (line[0] == "Ellipse")
                     {
-                        this.getEllipse(s,paintSurface);
+                        this.GetEllipse(s,paintSurface);
                     }
                     else
                     {
-                        this.getRectangle(s,paintSurface);
+                        this.GetRectangle(s,paintSurface);
                     }
                 }
             }
         }
 
         //load ellipse
-        public void getEllipse(String lines, Canvas paintSurface)
+        public void GetEllipse(String lines, Canvas paintSurface)
         {
             string[] line = Regex.Split(lines, "\\s+");
 
@@ -443,7 +392,7 @@ namespace tekenprogramma
         }
 
         //load rectangle
-        public void getRectangle(String lines,Canvas paintSurface)
+        public void GetRectangle(String lines,Canvas paintSurface)
         {
             string[] line = Regex.Split(lines, "\\s+");
 
