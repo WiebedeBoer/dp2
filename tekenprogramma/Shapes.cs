@@ -38,9 +38,6 @@ namespace tekenprogramma
         public FrameworkElement prevelement; //prev element
         public FrameworkElement nextelement; //next element
 
-        //public List<FrameworkElement> drawnElements = new List<FrameworkElement>();
-        //public List<FrameworkElement> removedElements = new List<FrameworkElement>();
-
         //file IO
         public string fileText { get; set; }     
 

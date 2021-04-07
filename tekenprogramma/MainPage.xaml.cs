@@ -106,7 +106,6 @@ namespace tekenprogramma
             Shape shape = new Shape(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y, 50, 50);
             ICommand place = new MakeRectangles(shape, this.invoker, paintSurface);
             this.invoker.Execute(place);
-            //Reshape(paintSurface); //repaint
         }
 
         //make ellipse shape
@@ -115,22 +114,11 @@ namespace tekenprogramma
             Shape shape = new Shape(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y, 50, 50);
             ICommand place = new MakeEllipses(shape, this.invoker, paintSurface);
             this.invoker.Execute(place);
-            //Reshape(paintSurface); //repaint
         }
 
         //moving shape
         private void MovingShape(object sender, PointerRoutedEventArgs e)
         {
-            ////remove selected
-            //if (selectedElement.Name == "Rectangle")
-            //{
-            //    paintSurface.Children.Remove(selectedElement);
-            //}
-            //else if (selectedElement.Name == "Ellipse")
-            //{
-            //    paintSurface.Children.Remove(selectedElement);
-            //}
-            //Shape shape = selectedShapesList.First();
             Location location = new Location();
             location.x = e.GetCurrentPoint(paintSurface).Position.X;
             location.y = e.GetCurrentPoint(paintSurface).Position.Y;
@@ -139,26 +127,11 @@ namespace tekenprogramma
             Shape shape = new Shape(location.x, location.y, location.width, location.height);
             ICommand place = new Moving(shape, invoker, location, paintSurface, selectedElement);
             this.invoker.Execute(place);
-            //Reshape(paintSurface); //repaint
-            //type = "deselecting";
-            //selecting = false;
-            //selectedShapesList.RemoveAt(0);
-            //selectedElement = null;
         }
 
         //resizing shape
         private void ResizingShape(object sender, PointerRoutedEventArgs e)
         {
-            ////remove selected
-            //if (selectedElement.Name == "Rectangle")
-            //{
-            //    paintSurface.Children.Remove(selectedElement);
-            //}
-            //else if (selectedElement.Name == "Ellipse")
-            //{
-            //    paintSurface.Children.Remove(selectedElement);
-            //}
-            //Shape shape = selectedShapesList.First();
             Location location = new Location();
             location.x = e.GetCurrentPoint(paintSurface).Position.X;
             location.y = e.GetCurrentPoint(paintSurface).Position.Y;
@@ -167,11 +140,6 @@ namespace tekenprogramma
             Shape shape = new Shape(location.x, location.y, location.width, location.height);
             ICommand place = new Resize(shape, invoker, e, location, paintSurface, selectedElement);
             this.invoker.Execute(place);
-            //this.invoker.Repaint();
-            //type = "deselecting";
-            //selecting = false;
-            //selectedShapesList.RemoveAt(0);
-            //selectedElement = null;
         }
         
         //move click
