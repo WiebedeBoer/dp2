@@ -38,6 +38,9 @@ namespace tekenprogramma
         public FrameworkElement prevelement; //prev element
         public FrameworkElement nextelement; //next element
 
+        public List<FrameworkElement> movedElements = new List<FrameworkElement>();
+        public List<FrameworkElement> unmovedElements = new List<FrameworkElement>();
+
         //file IO
         public string fileText { get; set; }     
 
@@ -158,6 +161,7 @@ namespace tekenprogramma
                 Canvas.SetLeft(newRectangle, location.x);//set left position
                 Canvas.SetTop(newRectangle, location.y); //set top position          
                 invoker.drawnElements.Add(newRectangle);
+                this.movedElements.Add(newRectangle);
             }
             else if (element.Name == "Ellipse")
             {
@@ -172,6 +176,7 @@ namespace tekenprogramma
                 Canvas.SetLeft(newEllipse, location.x);//set left position
                 Canvas.SetTop(newEllipse, location.y);//set top position
                 invoker.drawnElements.Add(newEllipse);
+                this.movedElements.Add(newEllipse);
             }
             Repaint(invoker, paintSurface); //repaint
 
@@ -201,13 +206,22 @@ namespace tekenprogramma
         {
             //remove next
             prevelement = invoker.drawnElements.Last();
-            invoker.removedElements.Add(prevelement);
-            invoker.drawnElements.RemoveAt(invoker.drawnElements.Count() - 1); 
+            this.unmovedElements.Add(prevelement);
+            invoker.drawnElements.RemoveAt(invoker.drawnElements.Count() - 1);
             //move back moved element
-            nextelement = invoker.movedElements.Last();
-            invoker.movedElements.RemoveAt(invoker.movedElements.Count() -1);
+            nextelement = this.movedElements.Last();
+            this.movedElements.RemoveAt(this.movedElements.Count() - 1);
             invoker.drawnElements.Add(nextelement);
-            Repaint(invoker, paintSurface); //repaint   
+            Repaint(invoker, paintSurface); //repaint  
+            ////remove next
+            //prevelement = invoker.drawnElements.Last();
+            //invoker.removedElements.Add(prevelement);
+            //invoker.drawnElements.RemoveAt(invoker.drawnElements.Count() - 1); 
+            ////move back moved element
+            //nextelement = invoker.movedElements.Last();
+            //invoker.movedElements.RemoveAt(invoker.movedElements.Count() -1);
+            //invoker.drawnElements.Add(nextelement);
+            //Repaint(invoker, paintSurface); //repaint   
         }
 
         //move back element
@@ -215,13 +229,22 @@ namespace tekenprogramma
         {
             //remove previous
             prevelement = invoker.drawnElements.Last();
-            nextelement = invoker.removedElements.Last();
-            invoker.removedElements.Add(prevelement);
-            invoker.movedElements.Add(prevelement);
+            nextelement = this.unmovedElements.Last();
+            this.unmovedElements.Add(prevelement);
+            this.movedElements.Add(prevelement);
             invoker.drawnElements.RemoveAt(invoker.drawnElements.Count() - 1);
             //move again moved element
-            invoker.drawnElements.Add(nextelement);   
+            invoker.drawnElements.Add(nextelement);
             Repaint(invoker, paintSurface); //repaint   
+            ////remove previous
+            //prevelement = invoker.drawnElements.Last();
+            //nextelement = invoker.removedElements.Last();
+            //invoker.removedElements.Add(prevelement);
+            //invoker.movedElements.Add(prevelement);
+            //invoker.drawnElements.RemoveAt(invoker.drawnElements.Count() - 1);
+            ////move again moved element
+            //invoker.drawnElements.Add(nextelement);   
+            //Repaint(invoker, paintSurface); //repaint   
         }
 
         //
