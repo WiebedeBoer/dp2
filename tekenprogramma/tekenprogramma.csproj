@@ -119,11 +119,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BaseShape.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="Invoker.cs" />
-    <Compile Include="Receiver.cs" />
     <Compile Include="Shapes.cs" />
-    <Compile Include="Group.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

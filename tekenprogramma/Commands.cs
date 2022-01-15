@@ -20,7 +20,7 @@ namespace tekenprogramma
         void Redo();
     }
 
-    //class make rectangle
+    //class make rectangle command
     public class MakeRectangles : ICommand
     {
         private Shape shape;
@@ -50,7 +50,7 @@ namespace tekenprogramma
         }
     }
 
-    //class make ellipse
+    //class make ellipse command
     public class MakeEllipses : ICommand
     {
         private Shape shape;
@@ -80,7 +80,7 @@ namespace tekenprogramma
         }
     }
 
-    //class moving
+    //class moving command
     public class Moving : ICommand
     {
         private Shape shape;
@@ -115,7 +115,7 @@ namespace tekenprogramma
         }
     }
 
-    //class resize
+    //class resize command
     public class Resize : ICommand
     {
         private Shape shape;
@@ -151,65 +151,40 @@ namespace tekenprogramma
         }
     }
 
-    //class select
+    //class select command
     public class Select : ICommand
     {
-
+        private Shape shape; 
         private PointerRoutedEventArgs e;
-        private Shape shape;
+        private Invoker invoker;
+        private Canvas paintSurface;
+        
 
-        public Select(Shape shape, PointerRoutedEventArgs e)
+        public Select(Shape shape, PointerRoutedEventArgs e, Invoker invoker, Canvas paintSurface)
         {
             this.e = e;
             this.shape = shape;
+            this.paintSurface = paintSurface;
+            this.invoker = invoker;
         }
 
         public void Execute()
         {
-            this.shape.Select(this.e);
+            this.shape.Select(this.e, this.invoker, this.paintSurface);
         }
 
         public void Undo()
         {
-            this.shape.Deselect(this.e);
+            this.shape.Deselect(this.invoker, this.paintSurface);
         }
 
         public void Redo()
         {
-            this.shape.Select(this.e);
+            this.shape.Reselect(this.invoker, this.paintSurface);
         }
     }
 
-    //class deselect
-    public class Deselect : ICommand
-    {
-
-        private PointerRoutedEventArgs e;
-        private Shape shape;
-
-        public Deselect(Shape shape, PointerRoutedEventArgs e)
-        {
-            this.e = e;
-            this.shape = shape;
-        }
-
-        public void Execute()
-        {
-            this.shape.Deselect(this.e);
-        }
-
-        public void Undo()
-        {
-            this.shape.Select(this.e);
-        }
-
-        public void Redo()
-        {
-            this.shape.Deselect(this.e);
-        }
-    }
-
-    //class saving
+    //class saving command
     public class Saved : ICommand
     {
         private Shape mycommand;
@@ -223,46 +198,77 @@ namespace tekenprogramma
 
         public void Execute()
         {
-            this.mycommand.Saving(paintSurface);
+            this.mycommand.Saving(this.paintSurface);
         }
 
         public void Undo()
         {
-            this.paintSurface.Children.Clear();
+            //this.paintSurface.Children.Clear();
         }
 
         public void Redo()
         {
-            this.paintSurface.Children.Clear();
+            //this.paintSurface.Children.Clear();
         }
     }
 
-    //class load
+    //class load command
     public class Loaded : ICommand
     {
         private Shape mycommand;
         private Canvas paintSurface;
+        private Invoker invoker;
 
-        public Loaded(Shape mycommand, Canvas paintSurface)
+        public Loaded(Shape mycommand, Canvas paintSurface, Invoker invoker)
         {
             this.mycommand = mycommand;
             this.paintSurface = paintSurface;
+            this.invoker = invoker;
         }
 
         public void Execute()
         {
-            this.mycommand.Loading(this.paintSurface);
+            this.mycommand.Loading(this.paintSurface,this.invoker);
         }
 
         public void Undo()
         {
-            this.paintSurface.Children.Clear();
+            //this.paintSurface.Children.Clear();
         }
 
         public void Redo()
         {
-            this.paintSurface.Children.Clear();
+            //this.paintSurface.Children.Clear();
         }
     }
+
+    ////class deselect
+    //public class Deselect : ICommand
+    //{
+
+    //    private PointerRoutedEventArgs e;
+    //    private Shape shape;
+
+    //    public Deselect(Shape shape, PointerRoutedEventArgs e)
+    //    {
+    //        this.e = e;
+    //        this.shape = shape;
+    //    }
+
+    //    public void Execute()
+    //    {
+    //        this.shape.Deselect(this.e);
+    //    }
+
+    //    public void Undo()
+    //    {
+    //        this.shape.Select(this.e);
+    //    }
+
+    //    public void Redo()
+    //    {
+    //        this.shape.Deselect(this.e);
+    //    }
+    //}
 
 }

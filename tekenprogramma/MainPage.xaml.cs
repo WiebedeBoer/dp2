@@ -32,63 +32,35 @@ namespace tekenprogramma
         //press on canvas
         private void Drawing_pressed(object sender, PointerRoutedEventArgs e)
         {
-            //selecting modus
-            if (selecting ==false)
+            FrameworkElement checkElement = e.OriginalSource as FrameworkElement;
+            //canvas elements
+            if (checkElement.Name == "Rectangle")
             {
-                selectedElement = e.OriginalSource as FrameworkElement;
-                //canvas elements
-                if (selectedElement.Name == "Rectangle")
-                {
-                    selecting = true;
-                    selectedElement.Opacity =0.6; //fill opacity
-                    selectedElements.Add(selectedElement);
-                }
-                else if (selectedElement.Name == "Ellipse")
-                {
-                    selecting = true;
-                    selectedElement.Opacity = 0.6; //fill opacity
-                    selectedElements.Add(selectedElement);
-                }
-                //not canvas elements
-                else
-                {
-                    selecting = false;
-                    //move
-                    if (type == "Move")
-                    {
-                        MovingShape(sender, e);
-                    }
-                    //resize
-                    else if (type == "Resize")
-                    {
-                        ResizingShape(sender, e);
-                    }
-                    //make shapes
-                    else if (type == "Rectangle")
-                    {
-                        MakeRectangle(sender, e);
-                    }
-                    else if (type == "Elipse")
-                    {
-                        MakeEllipse(sender, e);
-                    }
-                }
+                selectedElement = checkElement;
+                selecting = true;
+                Selecting(sender, e, selectedElement);
             }
-            //not selecting modus
+            else if (checkElement.Name == "Ellipse")
+            {
+                selectedElement = checkElement;
+                selecting = true;
+                Selecting(sender, e, selectedElement);
+            }
+            //not canvas elements
             else
             {
                 selecting = false;
                 //move
                 if (type == "Move")
                 {
-                    MovingShape(sender, e);
+                     MovingShape(sender, e);                   
                 }
                 //resize
                 else if (type == "Resize")
                 {
-                    ResizingShape(sender, e);
+                     ResizingShape(sender, e);               
                 }
-                //make
+                //make shapes
                 else if (type == "Rectangle")
                 {
                     MakeRectangle(sender, e);
@@ -97,7 +69,15 @@ namespace tekenprogramma
                 {
                     MakeEllipse(sender, e);
                 }
-            }          
+            }
+        }
+
+        //selecting shape
+        private void Selecting(object sender, PointerRoutedEventArgs e, FrameworkElement element)
+        {
+            Shape shape = new Shape(e.GetCurrentPoint(paintSurface).Position.X, e.GetCurrentPoint(paintSurface).Position.Y, 50, 50);
+            ICommand place = new Select(shape, e, this.invoker, paintSurface);
+            this.invoker.Execute(place);
         }
 
         //make rectangle shape
@@ -214,7 +194,7 @@ namespace tekenprogramma
             Shape command = new Shape(0, 0, 0, 0);
             ICommand place = new Saved(command, paintSurface);
             invoker.Execute(place);
-            invoker.Clear();
+            //invoker.Clear();
         }
 
         //load click
@@ -223,9 +203,9 @@ namespace tekenprogramma
             FrameworkElement button = e.OriginalSource as FrameworkElement;
             type = button.Name;
             Shape command = new Shape(0, 0, 0, 0);
-            ICommand place = new Loaded(command, paintSurface);
+            ICommand place = new Loaded(command, paintSurface,invoker);
             invoker.Execute(place);
-            invoker.Clear();
+            //invoker.Clear();
         }
 
         private void Front_canvas_PointerMoved(object sender, PointerRoutedEventArgs e)
