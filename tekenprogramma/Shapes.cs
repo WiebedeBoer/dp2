@@ -460,7 +460,10 @@ namespace tekenprogramma
             invoker.removedElements.Clear();
             invoker.selectElements.Clear();
             invoker.unselectElements.Clear();
-            //invoker.movedElements.Clear();
+            invoker.movedElements.Clear();
+            invoker.unmovedElements.Clear();
+            invoker.undoElements.Clear();
+            invoker.redoElements.Clear();
             invoker.executer = 0;
             invoker.counter = 0;
             //read file
