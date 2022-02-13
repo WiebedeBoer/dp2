@@ -203,12 +203,12 @@ namespace tekenprogramma
 
         public void Undo()
         {
-            //this.paintSurface.Children.Clear();
+            //placeholder
         }
 
         public void Redo()
         {
-            //this.paintSurface.Children.Clear();
+            //placeholder
         }
     }
 
@@ -233,42 +233,13 @@ namespace tekenprogramma
 
         public void Undo()
         {
-            //this.paintSurface.Children.Clear();
+            //placeholder
         }
 
         public void Redo()
         {
-            //this.paintSurface.Children.Clear();
+            //placeholder
         }
     }
-
-    ////class deselect
-    //public class Deselect : ICommand
-    //{
-
-    //    private PointerRoutedEventArgs e;
-    //    private Shape shape;
-
-    //    public Deselect(Shape shape, PointerRoutedEventArgs e)
-    //    {
-    //        this.e = e;
-    //        this.shape = shape;
-    //    }
-
-    //    public void Execute()
-    //    {
-    //        this.shape.Deselect(this.e);
-    //    }
-
-    //    public void Undo()
-    //    {
-    //        this.shape.Select(this.e);
-    //    }
-
-    //    public void Redo()
-    //    {
-    //        this.shape.Deselect(this.e);
-    //    }
-    //}
 
 }

@@ -119,7 +119,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BaseShape.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="Invoker.cs" />
     <Compile Include="Shapes.cs" />

@@ -8,7 +8,6 @@ using Windows.UI.Input;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-//using System.Windows.Controls;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -170,9 +169,6 @@ namespace tekenprogramma
             FrameworkElement button = e.OriginalSource as FrameworkElement;
             type = button.Name;
             invoker.Undo();
-            //paintSurface.Children.Clear();
-            //invoker.Repaint();
-            //Reshape(paintSurface); //repaint
         }
 
         //redo click
@@ -181,9 +177,6 @@ namespace tekenprogramma
             FrameworkElement button = e.OriginalSource as FrameworkElement;
             type = button.Name;
             invoker.Redo();
-            //paintSurface.Children.Clear();
-            //invoker.Repaint();
-            //Reshape(paintSurface); //repaint
         }
 
         //save click
@@ -194,7 +187,6 @@ namespace tekenprogramma
             Shape command = new Shape(0, 0, 0, 0);
             ICommand place = new Saved(command, paintSurface);
             invoker.Execute(place);
-            //invoker.Clear();
         }
 
         //load click
@@ -205,7 +197,6 @@ namespace tekenprogramma
             Shape command = new Shape(0, 0, 0, 0);
             ICommand place = new Loaded(command, paintSurface,invoker);
             invoker.Execute(place);
-            //invoker.Clear();
         }
 
         private void Front_canvas_PointerMoved(object sender, PointerRoutedEventArgs e)

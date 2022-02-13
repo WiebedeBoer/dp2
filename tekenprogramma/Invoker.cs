@@ -16,22 +16,19 @@ namespace tekenprogramma
     {
         public List<ICommand> actionsList = new List<ICommand>();
         public List<ICommand> redoList = new List<ICommand>();
-        //state 0
+        //state 0, remove
         public List<FrameworkElement> removedElements = new List<FrameworkElement>(); //0
-        //state 1
+        //state 1, draw
         public List<FrameworkElement> drawnElements = new List<FrameworkElement>(); //1
-        //state 2
+        //state 2, select
         public List<FrameworkElement> selectElements = new List<FrameworkElement>(); //2a
         public List<FrameworkElement> unselectElements = new List<FrameworkElement>(); //2b
-        //state 3
+        //state 3, move
         public List<FrameworkElement> movedElements = new List<FrameworkElement>(); //3a
         public List<FrameworkElement> unmovedElements = new List<FrameworkElement>(); //3b
-        //state 4
+        //state 4, undo redo
         public List<FrameworkElement> undoElements = new List<FrameworkElement>(); //4a
         public List<FrameworkElement> redoElements = new List<FrameworkElement>(); //4b
-        //undo redo shapes
-        //public List<List<FrameworkElement>> undo = new List<List<FrameworkElement>>();
-        //public List<List<FrameworkElement>> redo = new List<List<FrameworkElement>>();
 
         public int counter = 0;
         public int executer = 0;
@@ -77,22 +74,6 @@ namespace tekenprogramma
                 counter++;
             }
         }
-
-        ////repaint
-        //public void Repaint()
-        //{
-        //    //repaint actions
-        //    foreach (ICommand icmd in actionsList)
-        //    {
-        //        icmd.Execute();
-        //    }
-        //}
-
-        ////clear
-        //public void Clear()
-        //{
-        //    actionsList.Clear();
-        //}
 
     }
 }
